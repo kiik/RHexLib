@@ -1,0 +1,6 @@
+#!/bin/sh
+
+$RHEX_DIR/util/cc2d.pl $1 > $1.dsc
+$RHEX_DIR/util/d2g $1.dsc > $1.daVinci
+~/daVinci/daVinci $1.daVinci &
+

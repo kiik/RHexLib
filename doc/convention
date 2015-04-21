@@ -1,0 +1,30 @@
+Header files:
+
+  To avoid redefining things, header files are surrounded by
+
+    #ifndef _NAME_H
+    #define _NAME_H
+
+    ..code..
+
+    #endif
+
+Data types:
+
+  All new data types are in capital letters: BOOL, MODULE_FUNCTION, etc.
+  A data type specific to an object class is prefixed by that class's 
+  name.
+
+Enums:
+
+  Elements of an enum are upper case, prefixed by the object class that
+  uses them (if any).
+
+Local variables and struct elements:
+
+  Lower case:
+
+Functions:
+
+  Initial capitals as in: MMAddModule, MMMainLoop. If the function is global,
+  it should have a prefix describing its main object class.

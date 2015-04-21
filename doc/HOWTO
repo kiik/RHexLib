@@ -1,0 +1,16 @@
+HOWTO use LaTex:
+
+This is just a little file to let you know how to use LaTex to put these documents together. 
+
+To make the RHexLib Programmers' Guide, type latex body.tex
+You should repeat this several times, since LaTex usually can't get all the references right the first time through. 
+
+To make Laura's Abbreviated Guide to CVS, type latex lacvshelp.tex
+
+To make Laura's Abbreviate Guide to *nix, type latex lanixhelp.tex
+
+To view the .dvi files created by LaTex, type xdvi filename.dvi
+
+To make a postscript file of one of the dvi files, type 
+dvips filename.dvi
+

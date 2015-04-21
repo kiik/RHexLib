@@ -1,0 +1,97 @@
+#
+# This file is part of RHexLib, 
+#
+# Copyright (c) 2001 The University of Michigan, its Regents,
+# Fellows, Employees and Agents. All rights reserved, and distributed as
+# free software under the following license.
+# 
+#  Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 
+# 1) Redistributions of source code must retain the above copyright
+# notice, this list of conditions, the following disclaimer and the
+# file called "CREDITS" which accompanies this distribution.
+# 
+# 2) Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions, the following disclaimer and the file
+# called "CREDITS" which accompanies this distribution in the
+# documentation and/or other materials provided with the distribution.
+# 
+# 3) Neither the name of the University of Michigan, Ann Arbor or the
+# names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+######################################################################
+# $Id: rhex_mcgill.rc,v 1.8 2001/08/15 17:44:51 ulucs Exp $
+#
+# This file contains configuration information for the McGill hardware.
+#
+# Created       : Uluc Saranli, 03/22/2001
+# Last Modified : Uluc Saranli, 06/27/2001
+#
+######################################################################
+
+###################################################################
+# McGill accelerometer calibration
+
+accelerometer_voltage_gains = {90.8665 90.8665 90.8665};
+accelerometer_voltage_offsets = {2.470 2.520 2.5};
+gyro_voltage_gains = {1.0 3.4906 1.0};
+gyro_voltage_offsets = {2.48 2.715 2.5};
+
+###################################################################
+# CALIBRATION PARAMETERS
+#
+ground_offset = { 5.05 5.05 5.05 5.05 5.05 5.05 };
+manual_offset = { 3.14159 3.14159 3.14159 3.14159 3.14159 3.14159 };
+switch_offset = { 4.30  4.10 4.40 4.20 4.20 4.00 };
+
+###################################################################
+# ANALOG IO PARAMETERS
+#
+# The number of analog input channels to acquire
+analog_channels = 16;
+# Whether the analog acquision will be in polling or non-polling mode
+analog_polling = 1;
+
+############################################################
+# BATTERY MEASUREMENT CALIBRATION information
+#
+# The values are in the form { offset scale }.
+
+batt_voltage_calib = { 0.00 5.70 };
+batt_current_calib = { 0.00 16.1 };
+
+###################################################################
+# ENABLE THE MOTOR ESTIMATION
+#
+motor_estimation_enable = 1;
+
+###################################################################
+# CalibMachine CONFIGURATION
+#
+# Maximum time for calibration attempts ( in microseconds ) 
+calib_timeout = 3;
+# Voltage command for the ground seeking behavior and drive calibration (V) 
+calib_command = 0.4;
+# Minimum motor speed for polarity calibration (rad/s) 
+calib_min_speed = 0.5;
+# Minimum time of nonzero rotation for polarity calibration (in microseconds ) 
+calib_pol_time = 0.05;
+# Stall timeout for ground encoder calibration 
+calib_stall_time = 0.2;
+calib_stall_toler = 1e-3;
+  

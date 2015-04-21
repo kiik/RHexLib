@@ -1,0 +1,490 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: hardware.tex,v 1.4 2001/07/18 20:04:50 ulucs Exp $
+%
+% Created       : Uluc Saranli, 01/06/2001
+% Last Modified : Uluc Saranli, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Low Level Hardware Interface}
+\label{sec:hardware_interface}
+
+To facilitate the use of the library on more than one hardware platforms,
+\rhexlib\ enforces a uniform interface to possibly different low level
+hardware interfacing functions. Different platforms which have similar
+components such as encoders, analog inputs/outputs, digital inputs/outputs
+and timers, possibly with different connection schemes and access
+mechanisms, can be accessed through the virtual \Hardware\
+class. Instantiations of this class can, hence, hide all the details of the
+low level hardware by providing a standard set of member functions.
+
+\section{The \Hardware\ Class}
+\label{sec:hardware_class}
+
+\begin{codesegment}
+#include "Hardware.hh"
+\end{codesegment}
+
+\begin{classdef}
+class Hardware {
+public:
+
+  virtual CLOCK readClock( void ) = 0;
+  virtual CLOCK readUClock( void ) = 0;
+  virtual void driveEnable( uint index, bool enable ) = 0;
+
+  virtual void getParams( uint index, HWParam_t *param ) = 0;
+  virtual void getCalibration( uint index, HWCalib_t *calib ) = 0;
+  virtual void setCalibration( uint index, HWCalib_t *calib ) = 0;
+
+  EncoderHW   * encoders;
+  AnalogHW    * analogIO;
+  DigitalHW   * digitalIO;
+  TimerHW     * timers;
+  AccelHW     * accels;
+  GyroHW      * gyros;
+  PowerHW     * power;
+  SwitchHW    * switches;
+  DialHW      * dials;
+  DCMotorHW   * dcmotors;
+};
+\end{classdef}
+
+\begin{prototype}
+CLOCK Hardware::readClock( void );
+\end{prototype}
+
+The inherited class must implement this method to return the value of the
+low resolution clock provided by the hardware. This function relies on the
+operating system clock and and is computationally inexpensive. Consequently,
+this function should be used for most clock reads, unless higher resolution
+is absolutely necessary.  In that case, the {\tt Hardware::readUClock()}
+function may be used.
+
+\begin{prototype}
+CLOCK Hardware::readUClock( void );
+\end{prototype}
+
+The inherited class must implement this method to return the value of the
+high resolution clock provided by the hardware. This function is specified
+to have a resolution higher than or equal to that of the {\tt readClock() }
+method. It is usually implemented through hardware timers and takes
+substantially more time than its low resolution counterpart. It is provided
+mainly for tasks requiring very low timing granularity.
+
+\begin{prototype}
+void Hardware::driveEnable( uint index, \bool\ enable );
+\end{prototype}
+
+The inherited class must implement this method to enable or disable,
+depending on the value of {\tt enable}, the motor drives associated with the
+motor axis specified by {\tt index}.
+
+{\bf Note:} Some hardware implementations may not support individual
+commands for different axes. In this case, the effect of enabling any motor
+drive will enable all the drives and they will remain so until all the
+previously enabled drives are disabled.
+
+\begin{prototype}
+void Hardware::getParams( uint index, \hwparam\ *param );
+\end{prototype}
+
+The inherited class must implement this method to retrieve the constant
+parameters of the hardware object associated with the indicated axis (see
+the \hwparam\ data type in \S\ref{sec:special_types}). These parameters are
+static properties of the underlying hardware and do not change through the
+execution of the program (e.g. torque constant, speed constant, gear ratio
+etc. ).
+
+\begin{prototype}
+void Hardware::getCalibration( uint index, \hwcalib *calib ); \\
+void Hardware::setCalibration( uint index, \hwcalib *calib );
+\end{prototype}
+
+These methods are depracated and are kept for backwards compatibility. The
+inherited class must forward these function calls to the corresponding
+methods of the \DCMotorHW\ class. Modules should also use the \DCMotorHW\
+interface instead of this.
+
+\begin{prototype}
+EncoderHW   * encoders; \\
+AnalogHW    * analogIO; \\
+DigitalHW   * digitalIO; \\
+TimerHW     * timers; \\
+AccelHW     * accels; \\
+GyroHW      * gyros; \\
+PowerHW     * power; \\
+SwitchHW    * switches; \\
+DialHW      * dials; \\
+DCMotorHW   * dcmotors;
+\end{prototype}
+
+These fields point to various components provided by the particular
+instantiation of the hardware. Each of these components provides its own
+interface to access its functionality (see the following sections).
+
+These pointers are initialized by the Hardware base class constructor to be
+{\tt NULL} by default. When the instantiation of a particular Hardware
+inherited class wants provide the functionality of any of these components,
+it allocates an object of the corresponding type (which also need to be an
+inherited class), and assigns its pointer to one of these fields. If, on the
+other hand, the hardware instantiation does not support any of these
+components, the corresponding pointer should be left as {\tt NULL}
+
+\section{The \EncoderHW\ Class}
+\label{sec:encoder_class}
+
+The low level interface to incremental encoders in the system is implemented 
+through the \EncoderHW\ class. 
+
+\begin{classdef}
+class EncoderHW {
+public:
+  virtual void   enable( uint axis ) = 0;
+  virtual void   disable( uint axis ) = 0;
+
+  virtual uint16 read( uint axis ) = 0;
+  virtual void   reset( uint axis ) = 0;
+};
+\end{classdef}
+
+\begin{prototype}
+void EncoderHW::enable( uint axis ); \\
+void EncoderHW::disable( uint axis );
+\end{prototype}
+
+The inherited class must implement these methods to enable and disable the
+encoder hardware for the indicated axis.
+
+\begin{prototype}
+uint16 EncoderHW::read( uint axis ); \\
+void   EncoderHW::reset( uint axis );
+\end{prototype}
+
+The inherited class must implement these methods to read and reset the
+current 16 bit encoder count of the indicated axis.
+
+\section{The \AnalogHW\ Class}
+\label{sec:analog_class}
+
+\begin{classdef}
+class AnalogHW {
+public:
+  virtual float read( uint channel ) = 0;
+  virtual void  write( uint channel, float value ) = 0;
+};
+\end{classdef}
+
+\begin{prototype}
+float AnalogHW::read( uint channel );
+\end{prototype}
+
+The inherited class must implement this method to read the analog input from
+the indicated channel. The time resolution of the analog inputs depend on
+the particular implementation of the AnalogHW class.
+
+\begin{prototype}
+float AnalogHW::write( uint channel );
+\end{prototype}
+
+The inherited class must implement this method to output the supplied
+voltage on the indicated analog output channel.
+
+\section{The \DigitalHW\ Class}
+\label{sec:digital_class}
+
+The \DigitalHW\ interface organizes the digital inputs and outputs into
+groups of 8 bits. The interface class methods can be used to access a
+particular byte in its entirety or an individual bit of a particular
+byte. Note that the actual hardware digital lines that each of these bits
+correspond, as well as the I/O directionality of the lines depends on the
+specific implementation.
+
+\begin{classdef}
+class DigitalHW {
+public:
+  virtual uint   getByte( uint byte ) = 0;
+  virtual void   setByte( uint byte, uint8 value ) = 0;
+  virtual bool   getBit( uint byte, uint bit ) = 0;
+  virtual void   setBit( uint byte, uint bit, bool value ) = 0;
+};
+\end{classdef}
+
+\begin{prototype}
+uint DigitalHW::getByte( uint byte );
+\end{prototype}
+
+The inherited class must implement this method to input a byte from the
+digital input hardware. Note that if any of the lines are configured in
+hardware to be outputs, then the returned value is unspecified.
+
+\begin{prototype}
+void DigitalHW::setByte( uint byte, uint8 value );
+\end{prototype}
+
+The inherited class must implement this method to output a byte to the
+digital output hardware. Note that if any of the corresponding bits are
+configured in hardware to be inputs, then this method does not effect the
+bit.
+
+\begin{prototype}
+bool DigitalHW::getBit( uint byte, uint bit );
+\end{prototype}
+
+The inherited class must implement this method to input a bit from the
+digital input hardware. Note that if the corresponding digital line is
+configured in hardware to be an output, then the returned value is
+unspecified.
+
+\begin{prototype}
+void DigitalHW::setBit( uint byte, uint bit, bool value );
+\end{prototype}
+
+The inherited class must implement this method to output a bit to the
+digital output hardware. Note that if the corresponding bit is configured in
+hardware to be an input, then this method has no effect.
+
+\section{The \TimerHW\ Class}
+\label{sec:timer_class}
+
+The \TimerHW\ interface is used to communicate with the Intel 82C54 timers
+in the system. Please consult the 82C54 datasheets for specifications of
+different timer modes and a desription of their operation.
+
+\begin{classdef}
+class TimerHW {
+public:
+  virtual void   setup( uint timer, uint mode, uint32 hertz ) = 0;
+  virtual uint16 read( uint timer ) = 0;
+  virtual void   getInfo( uint timer, uint *initial, uint *clockFreq ) = 0;
+};
+\end{classdef}
+
+\begin{prototype}
+void setup( uint timer, uint mode, uint32 hertz );
+\end{prototype}
+
+The inherited class must implement this method to configure the indicated
+timer with the given mode and frequency. The actual frequency of operation
+depends on the hardware clock frequency of the timer chips.
+
+\begin{prototype}
+uint16 read( uint timer );
+\end{prototype}
+
+The inherited class must implement this method to read the current 16 bit
+counter value of the indicated timer.
+
+\begin{prototype}
+void getInfo( uint timer, uint *initial, uint *clockFreq );
+\end{prototype}
+
+The inherited class must implement this method to return the initial count
+that is configured through the {\tt setup()} method call as well as the
+frequency of the hardware clock used by the timer chips.
+
+\section{The \AccelHW\ Class}
+\label{sec:accel_class}
+
+\begin{classdef}
+class AccelHW {
+public:
+
+  typedef enum { AXIS_X, AXIS_Y, AXIS_Z } Axis;
+
+  virtual float read( Axis a ) = 0;
+  virtual void  getInfo( Axis axis, float *resolution, float *limit ) = 0;
+};
+\end{classdef}
+
+\section{The \GyroHW\ Class}
+\label{sec:gyro_class}
+
+\begin{classdef}
+class GyroHW {
+public:
+    
+  typedef enum { AXIS_X, AXIS_Y, AXIS_Z } Axis;
+    
+  virtual float read( Axis a ) = 0;
+  virtual void  getInfo( Axis axis, float *resolution, float *limit ) = 0;
+};
+\end{classdef}
+
+\section{The \PowerHW\ Class}
+\label{sec:power_class}
+
+\begin{classdef}
+class PowerHW {
+public:
+
+  virtual float voltage( void ) = 0;
+  virtual float current( void ) = 0;
+};
+\end{classdef}
+
+\section{The \SwitchHW\ Class}
+\label{sec:switch_class}
+
+The \SwitchHW\ is defined to provide transparent access to switch components 
+such as DIP switches or pushbuttons.
+
+\begin{classdef}
+class SwitchHW {
+public:
+  virtual bool read( uint index ) = 0;
+};
+\end{classdef}
+
+\begin{prototype}
+bool read( uint index );
+\end{prototype}
+
+The inherited class must implement this method to return a flag indicating
+whether a switch is ON or OFF.
+
+\section{The \DialHW\ Class}
+\label{sec:dial_class}
+
+The \DialHW\ interface is designed to provide uniform access to various
+forms of continuous inputs, such as remote control sticks, potentiometer
+dials etc.
+
+\begin{classdef}
+class DialHW {
+public:
+  virtual float read( uint index ) = 0;
+};
+\end{classdef}
+
+\begin{prototype}
+float read( uint index );
+\end{prototype}
+
+The inherited class must implement this method to return a number in the
+range $[-1, 1]$ corresponding to the current value of the indicated
+dial. Note that the hardware component corresponding to a particular index
+is determined by the specific instantiation of the hardware object.
+
+\section{The \DCMotorHW\ Class}
+\label{sec:dcmotor_class}
+
+The \DCMotorHW\ class is designed to interface all aspects of DC motors
+in the system. These range from setting the terminal voltage of the motor to 
+reading either measured or estimated motor current, voltage, temperature etc.
+
+\begin{classdef}
+class DCMotorHW {
+public:
+  typedef enum { VOLTAGE_MODE, CURRENT_MODE } ControlMode;
+  
+  virtual float getVoltage( uint index ) = 0;
+  virtual float getCurrent( uint index ) = 0;
+  virtual float getBackEMF( uint index ) = 0;
+  virtual float getTemperature( uint index ) = 0;
+
+  virtual ControlMode getControlMode( uint index ) = 0;
+  virtual void setCommand( uint index, float cmd ) = 0;
+  virtual float getCommand( uint index ) = 0;
+
+  virtual void getCalibration( uint index, HWCalib_t *calib ) = 0;
+  virtual void setCalibration( uint index, HWCalib_t *calib ) = 0;
+  
+};
+\end{classdef}
+
+\begin{prototype}
+float getVoltage( uint index ); \\
+float getCurrent( uint index ); \\
+float getBackEMF( uint index ); \\
+float getTemperature( uint index );
+\end{prototype}
+
+The inherited class must implement these methods to return several
+quantities associated with a particular DC motor in the system. Note that
+the hardware interface does not specify whether these values are actually
+measured or estimated based on available data. Specific hardware
+implementations will describe the details of how these values are computed.
+
+\begin{prototype}
+DCMotorHW::ControlMode getControlMode( uint index );
+\end{prototype}
+
+The inherited class must implement this method to return the control mode of
+the underlying DC motor drive circuitry. Higher level motion controllers
+should act according to whether the motors operate at {\tt
+DCMotorHW::VOLTAGE\_MODE} or {\tt DCMotorHW::CURRENT\_MODE}.
+
+\begin{prototype}
+void setCommand( uint index, float cmd );
+\end{prototype}
+
+The inherited class must implement this method to set the command to the
+indicated motor. The semantics of the command depend on which mode the motor
+drives are operating at. In {\tt VOLTAGE\_MODE}, the supplied voltage value
+is treated as the desired motor terminal voltage in Volts. In {\tt
+CURRENT\_MODE}, the value is treated as the desired motor armature current
+in Amperes.
+
+\begin{prototype}
+float getCommand( uint index );
+\end{prototype}
+
+The inherited class must implement this method to return the current motor
+command for the indicated axis. The semantics of the returned value are as
+described in the {\tt getCommand()} method.
+
+\begin{prototype}
+void getCalibration( uint index, HWCalib\_t *calib ); \\
+void setCalibration( uint index, HWCalib\_t *calib );
+\end{prototype}
+
+The inherited class must implement these methods to return and set the
+calibration information for the indicated motor axis (see the \hwcalib\ data
+type in \S\ref{sec:special_types}). These functions are provided by the
+\DCMotorHW\ class to facilitate access to calibration information by all the
+components in the system. The low level hardware interface usually does not
+make any use of this information.
+
+Normally, when a \rhexlib\ program starts up, a calibration procedure should
+be run (e.g. \CalibMachine\ module, see \S\ref{sec:calib_machine}) set the
+calibration through the method {\tt setCalibration()}. Then, all the other
+components in the system can query the low level hardware to access the
+calibration information transparently.
+

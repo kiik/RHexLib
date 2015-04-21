@@ -1,0 +1,1378 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: standardmodules.tex,v 1.9 2001/07/26 05:18:40 ulucs Exp $
+%
+% Created       : Uluc Saranli, 01/06/2001
+% Last Modified : Uluc Saranli, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Summary of Standard RHexLib Modules}
+\label{sec:rhexlib_module_summary}
+
+This section outlines the interfaces and properties of all standard modules
+provided with \rhexlib. At the end, Figure \ref{fig:module_summary} presents 
+a general view of how these components fit together.
+
+\section{Standard Module Utilities}
+
+In addition to providing a standard set of modules, RHexLib also provides
+some utilities to facilitate their use.
+
+\begin{codesegment}
+#include "StdModules.hh"
+\end{codesegment}
+
+\begin{prototype}
+void RHexAddStdModules( void );
+\end{prototype}
+
+This function adds all the standard RHexLib modules to the module manager's
+list with appropriate periods, offsets and orders. The names, and
+scheduling parameters of all the standard modules are defined in {\tt
+  StdModules.hh}
+
+\begin{prototype}
+void RHexRemoveStdModules( void );
+\end{prototype}
+
+This function removes all the standard RHexLib modules to the module manager's
+list. Note that this function can only be called after {\tt
+  RHexAddStdModules()} is called first.
+
+
+The following macros define the base orders for different types of
+modules. For proper functioning of the system, these macros should be used
+when adding modules to be used with the standard set of RHexLib modules.
+
+\begin{datatype}
+SENSING\_MODULES \\
+USER\_DEFINED\_SENSORS \\
+USER\_CONTROLLERS \\
+BEHAVIORAL\_CONTROLLERS \\
+LOW\_LEVEL\_CONTROLLERS \\
+ACTUATOR\_MODULES \\
+LOGGING\_MODULES \\
+OTHER\_MODULES \\
+\end{datatype}
+
+\section{Basic Modules}
+
+\subsection{The \EncoderReader\ Module}
+
+\begin{moduleheader}
+\classname{\EncoderReader} \mline
+\modulebase{\Module} \mline
+\modulename{encreader} \mline
+\moduleflags{multi-user, non-polling}
+\usedmodules{None}
+\end{moduleheader}
+
+The \EncoderReader\ module periodically reads the current count of the
+encoder corresponding to its {\tt index} from the system level \Hardware\
+object and keeps track of an absolute angular position and velocity for the
+corresponding axis. \\
+
+\constructors
+
+\begin{itemize}
+\item{\tt EncoderReader ( int index ); }
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void reset( float pos );}\par
+This method sets the current position to {\tt pos}, in radians.
+\item{\tt float getPosition( void );} \par 
+This method returns the current position in radians, in the range $[-\pi,
+\pi]$.
+\item{\tt float getSpeed( void );} \par
+This method returns the current speed in $rad/s$.
+\item{\tt \CLOCK\ getTimestamp( void );} \par
+This method returns the timestamp of the latest encoder read.
+\end{itemize}
+
+\subsection{The \SpeedFilter\ Module}
+
+\begin{moduleheader}
+\classname{\SpeedFilter} \mline
+\modulebase{\Module} \mline
+\modulename{spdfilter} \mline
+\moduleflags{multi-user, non-polling}
+\usedmodules{\EncoderReader}
+\end{moduleheader}
+
+The \SpeedFilter\ module periodically reads the speed from the
+\EncoderReader\ module with the same {\tt index}, and filters the value with
+a simple FIR filter. \\
+
+\constructors
+
+\begin{itemize}
+\item{\tt SpeedFilter ( int index ); }
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt float getSpeed( void );}\par
+This method returns the current filtered speed in $rad/s$.
+\end{itemize}
+
+\configsymbols\ None.
+
+\subsection{The \AnalogOutput\ Module}
+
+\begin{moduleheader}
+\classname{\AnalogOutput} \mline
+\modulebase{\Module} \mline
+\modulename{analogout} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{None.}
+\end{moduleheader}
+
+The \AnalogOutput\ module periodically outputs its current value on the
+analog output channel corresponding to its { \tt index} on the system level
+\Hardware\ object. \\
+
+\constructors
+
+\begin{itemize}
+\item{\tt AnalogOutput ( int index ); }
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void setValue( float v );}\par
+This method sets the current output to {\tt v}, in Volts.
+\item{\tt float getValue( void );}\par
+This method returns the current output value in Volts.
+\end{itemize}
+
+\configsymbols\ None.
+
+
+\section{Motor Control Modules}
+
+\subsection{The \MotorControl\ Abstract Base Class}
+
+\begin{moduleheader}
+\classname{\MotorControl} \mline
+\modulebase{\Module} \mline
+\moduleflags{single-user, non-polling}
+\end{moduleheader}
+
+The \MotorControl\ class is a abstract base class for all modules that
+achieve feedback motor control. It enforces a uniform interface to all such
+modules. Inherited classes must still provide the {\tt init()}, {\tt
+uninit()}, {\tt activate()}, {\tt deactivate()}, {\tt update()} methods.  \\
+
+\constructors
+
+\begin{itemize}
+\item{\tt MotorControl( char *name, int index ); }
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void getGains( MotorGains\_t *g );}\par
+This method returns the current motor gains in the struct *g.
+\item{\tt void setGains( MotorGains\_t *g );}\par
+This method sets the current motor gains to the contents of *g.
+\item{\tt void getTarget( MotorTarget\_t *t );}\par
+This method returns the current motor target in the struct *t.
+\item{\tt void setTarget( MotorTarget\_t *t );}\par
+This method sets the current motor target to the contents of *t.
+\end{itemize}
+
+
+\subsection{The \PositionControl\ Module}
+
+\begin{moduleheader}
+\classname{\PositionControl} \mline
+\modulebase{\Module} \mline
+\modulename{poscontrol} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{\EncoderReader, \AnalogOutput}
+\end{moduleheader}
+
+The \PositionControl\ module performs standard proportional derivative
+control over the DC motor corresponding to the module's index number. In
+addition to performing position and velocity feedback, it also supports
+feedthrough torque commands as well as the ability to configure the type
+feedforward compensation.\\
+
+The computed torque command takes the following form.
+
+\begin{equation}
+\tau = K_p * e_p + K_d * e_d + \tau_0
+\label{eq:torque_feedback}
+\end{equation}
+
+where $K_p$ and $K_d$ are the P and D gains, $e_p$ and $e_d$ are the
+position and velocity errors and $\tau_0$ is the feedthrough torque setting.
+
+The computation of the position error, due to the rotational nature of the
+motor shaft coordinates, requires the definition of an {\em error offset},
+$\phi_0$, which is used to determine the range to constrain the position
+error term in the above equation.
+
+As a consequence, the cotnroller determines $e_p$ by properly choosing the
+integer $k$ in the following equation.
+
+\begin{equation}
+e_p = ( \phi_{goal} - \phi ) + 2 k \pi 
+\hspace{0.1in}\text{ such that } \hspace{0.1in} 
+e_p \in [-\pi+\phi_0, \pi+\phi_0]
+\label{eq:pos_error_offset}
+\end{equation}
+
+This leverage over the range of the position error on $S_1$ enables features
+such as favoring positive ($\phi_0 > 0$) or negative rotation ($\phi_0 < 0$)
+of the motor for large position errors (avoiding springback of the leg). Note
+that $\phi_0$ cannot be too close to either $\pi$ or $-\pi$ because then,
+even when the position of the leg is slightly different than the desired
+position, the leg might try to rotate from an unreasonable
+direction. Usually, choosing $\phi_0 \in [-\pi/2, \pi/2]$ is a good idea.
+
+Once the torque command is computed, the desired voltage command at motor
+terminals is computed using the torque constant of the motor as well as a
+feedforward compensation term depending on the current compensation
+mode. Currently supported modes are {\tt NONE} and {\tt BACKEMF}.\\
+
+\constructors
+
+\begin{itemize}
+\item{\tt PositionControl ( int index ); }
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void setTorqueOffset( float torque );}\par
+This method sets the feedthrough torque value $\tau_0$ of Equation
+\ref{eq:torque_feedback}.
+
+\item{\tt void setErrorOffset( float offset );}\par
+This method sets the position error offset value $\phi_0$ of Equation
+\ref{eq:pos_error_offset}.
+
+\item{\tt float getErrorOffset( void );}\par
+This method returns the current setting of $\phi_0$.
+
+\item{\tt void setCompensationType( CompensationType type );}\par
+This method sets the type of the feedforward voltage compensation in
+computing the motor terminal voltage to be commanded to the physical
+hardware. Currently, the position control module assumes that the low level
+motor drive circuitry operrates in voltage mode. This requires feedforward
+compensation to obtain approximate torque control. The currently supported
+types, {\tt NONE} and {\tt BACKEMF} can be used to select the type of the
+compensation used by the controller.
+
+\item{\tt CompensationType getCompensationType( void );}\par
+This method returns the current type of feedforward voltage compensation.
+
+\item{\tt void freeze( void );}\par
+This method freezes the motor position by setting the current motor target 
+to the current motor position.
+\end{itemize}
+
+\configsymbols\ None.
+
+\section{State Machine Tools}
+
+\subsection{The \StateMachine\ Abstract Base Class}
+
+The \StateMachine\ class is the abstract base class for all state machine
+implementations. It defines a uniform interface for defining and running
+state machines, automatically handling event checking and state
+transitions. There are three related classes: {\tt State}, {\tt Event} and
+{\tt Arc}. The first two are abstract base classes. A {\tt StateMachine}
+class contains a list of its {\tt State} classes, which are all derived from
+the state class. Each state contains a list of arcs, which consist of an
+{\tt Event} object and another {\tt State}.
+
+The {\tt Event} abstract base class has the following form.
+
+\begin{moduleheader}
+\classname{{\tt Event} } \mline
+\modulebase{None} \mline
+\end{moduleheader}
+
+\constructors
+
+\begin{itemize}
+\item {\tt Event( StateMachine * p );}\par
+{\tt p} should point to the {\tt StateMachine} class that owns the event
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt virtual bool check( void );} \par
+must be defined by children classes
+\end{itemize}
+
+\noindent Programmers can use the {\tt EventObject} macro in the following
+way to define new events classes derived from {\tt Event}. This is usually
+done in class definition of a machine derived from a state machine so that
+the scope of the new class is limited to the derived state machine class.
+
+\begin{codesegment}
+  EventObject( NewEvent ) * newEvent;
+\end{codesegment}
+
+\noindent This defines a new class called NewEvent which is derived from
+{\tt Event}. It declares itself a friend of the containing class, and then
+defines {\tt newEvent} to be a pointer to a {\tt NewEvent} object. It is a
+programming conventon in RHexLib that event classes are capitalized and
+event objects have the same name only with the first symbol in lowercase.
+
+Arcs or {\em transitions} are instantiations of the {\tt Arc} class:
+
+\begin{moduleheader}
+\classname{{\tt Arc}} \mline
+\modulebase{None} \mline
+\end{moduleheader}
+
+\constructors
+
+\begin{itemize}
+\item {\tt Arc( State * s, Event * e );}
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt State * getTarget( void );} \par
+returns the destination state of the arc 
+\end{itemize}
+
+Finally, states must be derived from the {\tt State} abstract base class. 
+
+\begin{moduleheader}
+\classname{{\tt State}} \mline
+\modulebase{None} \mline
+\end{moduleheader}
+
+\constructors
+
+\begin{itemize}
+\item{\tt State( StateMachine * p );}
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void addArc ( Arc * a );} \par
+This method adds the arc {\tt a} to the state's outgoing arcs.
+\item{\tt Arc * getActiveArc ( void );} \par
+Returns first arc leaving state whose event is true (or {\tt NULL} if no
+such arc)
+\item{\tt virtual void entry ( void );} \par
+must be defined by child classes
+\item{\tt virtual void during ( void );} \par
+must be defined by child classes
+\item{\tt virtual void exit ( void );} \par
+must be defined by child classes
+\end{itemize}
+
+\noindent Programmers may use the {\tt StateObject} macro to define new
+state classes within the scope of a {\tt StateMachine} derived class as
+follows:
+
+\begin{codesegment}
+  StateObject( NewState ) * newState;
+\end{codesegment}
+
+\noindent The naming convention for derived state classes is the same as for
+events. Programmers may add new outgoing arcs to a state using the {\tt
+addArc} method or more conveniently using the {\tt Transition} macro as
+follows:
+
+\begin{codesegment}
+  Transition ( fromState, anEvent, toState );
+\end{codesegment}
+
+\noindent which is syntactic sugar for
+
+\begin{codesegment}
+  fromState->addArc ( toState, anEvent );
+\end{codesegment}
+
+The {\tt StateMachine} class is as follows.
+
+\begin{moduleheader}
+\classname{\StateMachine} \mline
+\modulebase{\Module} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{None}
+\end{moduleheader}
+
+The \AnalogOutput\ module periodically outputs its current value on the
+analog output channel corresponding to its { \tt index} on the system level
+\Hardware\ object. \\
+
+\constructors
+
+\begin{itemize}
+\item{\tt StateMachine( char *n );}
+\item{\tt StateMachine( char *n, State *initial );}
+\item{\tt StateMachine( char *n, uint index );}
+\item{\tt StateMachine( char *n, uint index, State *initial );} 
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void initialize( State *i );} \par
+This method sets the initial state to *i.
+\end{itemize}
+
+\noindent Note that state machines are modules and thus have the methods
+{\tt activate}, {\tt update} and so on, except that they are not virtual and
+thus derived classes do not have to define them, although in practice they
+usually do. The {\tt update} function of a {\tt StateMachine} class is quite
+simple and is shown below. The private variable {\tt current} points to the
+currently active state.
+
+\begin{codesegment}
+  void StateMachine::update( void ) {
+
+    Arc * a = current->getActiveArc();
+
+    if ( a != NULL ) {
+
+      current->exit();
+      current = a->target;
+      current->entry();
+    }
+
+    current->during();
+  }
+\end{codesegment}
+
+\noindent Thus, a {\tt StateMachine} acts like its currently active state
+{\em and} checks for active arcs leaving the current state, switching states
+to the destination state of the arc if it finds any.
+
+\section{Controller Suite}
+
+\subsection{The \CalibMachine\ Module}
+\label{sec:calib_machine}
+
+\begin{moduleheader}
+\classname{\CalibMachine} \mline
+\modulebase{\StateMachine} \mline
+\modulename{calibmachine} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{\AnalogOutput, \EncoderReader, \SpeedFilter, \StallSensor,
+  \PositionControl.}
+\end{moduleheader}
+
+The \CalibMachine\ module is a controller that performs motor drive and
+encoder homing calibration. Upon activation, it detects motor polarity,
+calibrates the encoders to the correct absolute position and finally
+determines the analog output voltage for zero command.\\
+
+Figure \ref{fig:calibmachine} illustrates the state transition diagram for
+the calibration state machine. The shaded regions indicate states related to
+polarity, encoder and drive calibration algorithms.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[!ht]
+  \centering
+  \epsfig{figure=CalibMachine.eps,width=5.8in}
+  \caption{\CalibMachine\ state transition diagram.}
+  \label{fig:calibmachine}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The polarity calibration is designed to determine the connection polarity of
+the motor terminals. Incorrect polarity information will result in unstable
+behavior in the local PD feedback control. The algorithm to determine the
+polarity is very simple. It starts by applying a positive voltage to the
+motor terminals, recording rotational velocity, determining connection
+polarity. If, however, the leg is stuck on the ground and is unable to
+rotate (stallEv), then it retries with a negative voltage, which will yield
+the polarity information if the leg is not permanently stuck.
+
+The calibration of the encoders is a good deal more complicated. The manual
+calibration is the simplest. The {\tt encManualCalib} state simply assumes
+that the current position of the legs corresponds to leg angles specified in
+the {\tt manual\_offset} configuration variable and resets the encoders
+accordingly.
+
+In contrast, ground calibration rotates the legs in the positive direction
+until they hit the ground, and then resets the encoder angles assuming that
+the legs are at angles specified by the {\tt ground\_offset} configuration
+variable.
+
+Finally, the home switch calibration relies on the presence of home switches
+triggered at a certain angle of the leg. The calibration machine assumes
+that the {\tt SwitchHW} component of the low level hardware provides the
+outputs of these switches at indices 8 through 13, so that their value is
+{\tt true} when the leg triggers the switch. The algorithm starts by
+rotating the legs in the positive direction until they either hit the ground
+or trigger the switch. If they trigger the switch, it waits until the leg
+clears the switch, then starts rotating in the opposite direction to
+approach the switch from the correct side. This is important because the leg
+angle triggering the switch from different rotational directions will be
+different. If, on the other hand, the leg hits the ground, the algorithm
+immediately starts seeking the switch by rotating the leg in the negative
+direction. 
+
+When the switch is detected while the leg is rotating in the negative
+direction, the encoder angles are reset with the angles specified by the
+configuration variable {\tt switch\_offset}.
+
+\constructors
+
+\begin{itemize}
+\item{\tt CalibMachine( int index ); }
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt CalibStatus getStatus( void ); } \par
+This method returns the current calibration status.
+
+\item{\tt void reset( void );} \par
+This method invalidates the polaritym encoder and drive calibrations,
+causing the machine to perform calibration after the next activation. Note
+that the invalidation of the polarity depends on the compile time
+configuration of CalibMachine which by default disables the polarity
+detection unless the low level hardware does not provide polarity information.
+
+\item{\tt void reset( bool polarity, bool encoder, bool drive );} \par
+This method selectively invalidates polarity, encoder and/or drive
+calibration. Note that the invalidation of the polarity depends on the
+compile time configuration of CalibMachine which by default disables the
+polarity detection unless the low level hardware does not provide polarity
+information.
+
+\item{\tt void setMode( CalibMode m ); } \par
+This method chooses the type of calibration to be used in the next
+activation.
+
+\item{\tt CalibMode getMode( void ); } \par
+This method returns the current calibration mode
+
+\item{\tt void setUpside( bool down ); } \par
+This method chooses whether the body should be assumed to be upside down or
+not.  If already calibrated, it resets the encoder reader modules to reflect
+the change.
+
+\item{\tt bool isUpsideDown( void ); } \par
+This method returns the current assumption for the body orientation.
+
+\end{itemize}
+
+\datatypes
+
+\begin{itemize}
+\item{\tt typedef enum CalibMachine::CalibStatus \{ \par
+CalibMachine::CALIBRATING, \par
+CalibMachine::FAILURE, \par
+CalibMachine::SUCCESS  \par \}}\par
+
+This datatype is used to indicate the current status of the calibration
+state machine.
+
+\item{\tt typedef enum CalibMachine::CalibMode \{ \par
+CalibMachine::MANUAL, \par
+CalibMachine::GROUND, \par
+CalibMachine::SWITCH \par \} }\par
+
+This datatype is used to configure the calibration state machine to use one
+of the supported calibration modes. Currently, three modes are supported:
+{\em manual calibration}, which assumes that the legs are statically
+positioned by the operator to a predetermined angle; {\em ground
+  calibration}, which brings the legs forward to touch the ground and
+assumes a particular offset for the legs when they are n contact wioth the
+ground, and finally, {\em home switch calibration}, which uses Hall effect
+sensors on the hips to calibrate the encoder offsets.
+\end{itemize}
+
+\configsymbols
+
+\begin{itemize}
+
+\symbolitem{\tt manual\_offset}\par
+This numeric array symbol configures the angles of all six legs when the
+legs are manually positioned for manual encoder calibration.
+
+\symbolitem{\tt ground\_offset}\par
+This numeric array symbol configures the angles of all six legs when the
+legs are touching the ground towards the back of the robot when the robot's
+right side is up. These angles are used in the ground encoder calibration.
+
+\symbolitem{\tt switch\_offset}\par
+This numeric array symbol configures the angles of all six legs when the
+legs trigger the home switch (hall effect sensor) while rotating in the
+negative direction. These angles are used during home switch encoder
+calibration.
+
+\symbolitem{\tt calib\_timeout}\par
+Maximum allowed time for calibration attempts (usec)
+
+\symbolitem{\tt calib\_command} \par
+Voltage command for the ground seeking behavior and drive calibration (V)
+
+\symbolitem{\tt calib\_min\_speed} \par
+Minimum required motor speed for polarity calibration (rad/s)
+
+\symbolitem{\tt calib\_pol\_time} \par
+Minimum required time of nonzero rotation for polarity calibration (usec)
+
+\symbolitem{\tt calib\_stall\_time} \par
+Stall time threshold for ground encoder calibration (usec)
+
+\symbolitem{\tt calib\_stall\_toler} \par
+Maximum allowed motor rotation speed, still interpreted as stall (rad/s)
+
+\symbolitem{\tt calib\_grnd\_retry} \par
+Flag to indicate whether the home switch encoder calibration should fallback
+to ground encoder calibration upon failure.
+
+\end{itemize}
+
+\subsection{The \WalkMachine\ Module}
+\label{sec:walk_machine}
+
+\begin{moduleheader}
+\classname{\WalkMachine} \mline
+\modulebase{\StateMachine} \mline
+\modulename{walkmachine} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{\PositionControl, \EncoderReader.}
+\end{moduleheader}
+
+The \WalkMachine\ module is a controller which implements the two-stroke
+alternating tripod controller, parametrized by the stride period as well as
+duty factors, sweep angles and leg offsets for individual legs. It supports
+walking forward and backward, turning in place and differential turning,
+even when the robot is upside down. All the functionality can be configured
+through the module's local interface. As such, the \WalkMachine\ does not
+make any adjustments such as responding to the remote control etc. itself,
+and needs a ``supervisor'' to modulate its behavior. \\
+
+\constructors
+
+\begin{itemize}
+\item{\tt WalkMachine( void ); }
+\end{itemize}
+
+\datatypes
+
+The WalkMachine defines a class datatype to encapsulate the standard
+parameters of walking behavior. It takes the form of a class with proper
+copy constructors to correctly handle copying of its instances. All of its
+member variables are defined public and can be accessed by anyone.
+
+\begin{classdef}
+class WalkParam_t {
+
+public:
+  WalkParam_t( void ) { };
+  WalkParam_t( WalkParam_t & );
+
+  WalkParam_t& operator=( const WalkParam_t & );
+
+public:
+
+  float dutyFactor[6];   // Ratio of slow time to period of rotation
+  float sweepAngle[6];   // Angle span during the slow leg sweep
+  float legOffset[6];    // Angle offset for the whole profile
+  MotorGains_t gains[6]; // Walking motor gains
+
+  double cpgPeriod;      // Period of the whole step cycle    
+  double tripodTime;     // Time to prepare and bring down the first tripod
+  double standAdjTime;   // Leg offset adjustments time interval while standing
+  float turnOffset;      // Differential leg offset adjustment for turning 
+  float turnSweepAngle;  // Differential sweep angle adjustment for turning
+  float turnDutyFactor;  // Differential duty factor adjustment for turning
+  float smooth;          // Ratio for the smoothing speed transitions
+  bool cubic;            // Flag to choose between linear or cubic spline smoothing
+};
+\end{classdef}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void setSpeedCommand( float cmd ); } \par
+This method sets the speed command of the walking controller. This
+command must be either $-1$, $0$, or $1$.
+\item{\tt void setTurnCommand( float cmd ); } \par
+This method sets the turning command of the walking controller. A
+command $-1$ indicates turning left, $1$ indicates turning right and $0$
+indicated no turning.
+\item{\tt void setUpside( bool down ); } \par
+This method can be used to set the walking controllers assumption
+about the robots body orientation. {\tt setUpside( false ) } configures
+upside down operation.
+\item{\tt void setParams( WalkParam\_t *p ); } \par
+This method can be used to set all the walking parameters, modulating
+the walking behavior. The parameters are updated only at
+half cycles. Moreover, the pointer to the parameter settings is stored,
+so any subsequent changes to the contents of {\tt *p} will also change
+walking behavior.
+\item{\tt void getParams( WalkParam\_t *p ); } \par
+This method returns the current walking parameters in {\tt *p }. 
+\item{\tt bool isDone( void ); } \par
+This method returns a flag indicating whether the walking controller
+is done with its operation, which means that both speed and turn
+commands are zero and both tripods are lowered.
+\end{itemize}
+
+\configsymbols\ None.
+
+\subsection{The \RHexWalker\ Module}
+\label{sec:rhexwalker}
+
+\begin{moduleheader}
+\classname{\RHexWalker} \mline
+\modulebase{\Module} \mline
+\modulename{rhexwalker} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{\WalkMachine, \SlopeEstimator.}
+\end{moduleheader}
+
+The \RHexWalker\ module is a controller which implements variable speed
+two-stroke alternating tripod gait with inclination compensation and
+variable speed alternating triwheel gait. It accomplishes this by modulating
+parameter settings of \WalkMachine, in a way that is adjustable through
+configuration files.
+
+The alternating tripod gait is the standard walking algorithm for RHex,
+which is used when it has non-circular legs mounted. Section
+\ref{sec:walk_machine} summarizes the parameters which modulate the walking
+behavior. The RHexWalker module supports variable speed walking, but
+choosing parameter values from a piecewise linear interpolation of several
+experimentally tuned parameter sets. Several configuration variables define
+these various sets and how the interpolation is achieved.
+
+The inclination compensation of the walking gait involves adjusting some of
+the walking parameters based on an estimate of the slope through the
+\SlopeEstimator\ module. When it is disabled, the leg offsets can also be
+manually adjusted through the {\tt setLegOffset()} method call.
+
+The triwheel gait can be used when RHex has circular legs mounted. This gait
+also relies on using \WalkMachine, but the parameters are chosen in a very
+particular manner. First of all, three of the parameters are kept constant
+(with the exception of differential turning): duty factor at $0.5$, leg
+offset at $0$ and sweep angle at $\pi$. The period of leg rotation
+determines the effective speed, and that parameter is modulated through the
+{\tt setForwardCommand()} method. Note that the triwheel gait does not have
+inclination compensation and the leg offset cannot be changed. Once again,
+the behavior of the speed control and the gait can be adjusted through the
+configuration file (see symbol descriptions below).\\
+
+\constructors
+
+\begin{itemize}
+\item{\tt RHexWalker( void ); }
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void setGait( WalkingGait newGait ); }\par
+This method sets the walking gait to be used by \RHexWalker. Two gaits are
+currently supported {\tt TWO\_STROKE\_TRIPOD\_GAIT} and {\tt
+  TRIWHEEL\_GAIT}. The new gait setting becomes effective next time the
+module is activated, so changing gaits during walking is not possible.
+
+\item{\tt void setForwardCommand( float cmd ); }\par
+This method sets the forward command of the walking controller in the range
+$[-1, 1]$. It supports variable speed walking, where the magnitude of the
+forward speed command determines the \WalkMachine\ parameters to be used
+based on configuration file settings and the current gait (see below).
+
+\item{\tt void setTurnCommand( float cmd ); }\par
+This method sets the turning command of the walking controller in the range
+$[-1, 1]$. For differential turning, it performs on/off control. For turning
+in place, tt supports variable speed turning, where the magnitude of the
+speed command determines the \WalkMachine\ parameters to be used
+based on configuration file settings and the current gait (see below).
+
+\item{\tt void inclineEnable( bool enable ); }\par
+This method can be used to enable/disable the inclination compensation for
+the alternating tripod gait. Enabling the inclination compensation overrides
+the manual leg offset setting.
+
+\item{\tt void setLegOffset( float offset ); }\par
+This method manually sets the leg offsets for all the legs. It is effective
+only when the inclination compensation is disabled.
+
+\item{\tt void setUpside( bool down ); }\par
+This method can be used to set the walking controllers assumption
+about the robots body orientation. {\tt setUpside( false ) } configures
+upside down operation.
+
+\item{\tt bool isDone( void ); }\par
+This method returns a flag indicating whether the walking controller is
+ready to exit or not. Supervisors should check this flag before deactivating
+RHexWalker.
+\end{itemize}
+
+\configsymbols
+
+\begin{itemize}
+\symbolitem{\tt walk\_speeds}\par
+This numeric array symbol gives a set of ``speed setting'' indices, to which
+the parameter settings of the alternating tripod controller will
+correspond. This way, the user can configure experimentally tuned speed
+settings to irregularly spaced intervals. For example, if you have
+parameters for a very slow walk, and then two other parameter sets for fast
+walking with slightly different speeds, {\tt walk\_speeds = \{ 1.0 9.0 10.0
+  \}} would be a good setting. Most of the symbols below with the prefix
+{\tt walk} must have the same number of array elements as this symbol.
+
+If {\tt walk\_speeds} is not defined, only the first elements of the array
+symbols below are used for all speed settings and the variable speed feature
+is disabled.
+
+\symbolitem{\tt walk\_tripod\_time}\par
+This numeric array symbol configures the time spent to prepare the tripod
+before the walking starts as well as to bring the upper tripod down when it
+stops. Each of the array entries correspond to one of the speed indices and
+for a given speed setting, the value of this parameter is linearly
+interpolated between the two enclosing values. If {\tt walk\_speeds} is not
+defined, only the first number in the array is used for the parameter.
+
+\symbolitem{\tt walk\_cpg\_period}\par
+This numeric array symbol configures the rotation period of all the
+legs. The semantics of the array elements are the same as the {\tt
+  walk\_tripod\_time} symbol.
+
+\symbolitem{\tt walk\_duty\_factor}\par
+This numeric array symbol configures the ratio of the slow period of all the
+legs to the overall rotational period. The semantics of the array elements
+are the same as the {\tt walk\_tripod\_time} symbol.
+
+\symbolitem{\tt walk\_sweep\_angle}\par
+This numeric array symbol configures the angle span of the slow leg rotation
+phase. The semantics of the array elements are the same as the {\tt
+  walk\_tripod\_time} symbol.
+
+\item{\tt walk\_leg\_offset\_forward, walk\_leg\_offset\_backward}\par
+\symbolindex{\tt walk\_leg\_offset\_forward}
+\symbolindex{\tt walk\_leg\_offset\_backward}
+These numeric array symbols configure the angular offset of the whole leg
+profile with respect to the vertical. The semantics of the array elements
+are the same as the {\tt walk\_tripod\_time} symbol.
+
+\symbolitem{\tt walk\_cubic}
+This numeric symbol defines whether cubic smoothing is enabled for the
+profile generation of the alternating tripod walking controller.
+
+\symbolitem{\tt walk\_smooth\_factor}\par
+If the cubic smoothing is enabled, this numeric array symbol configures what
+percentage of the leg rotation period should be used for the smoothing. Once
+again, the corresponding \WalkMachine\ parameter is interpolated as in the
+{\tt walk\_tripod\_time} symbol.
+
+\item{\tt walk\_turn\_offset, walk\_turn\_sweep\_angle,
+    walk\_turn\_duty\_factor}\par
+\symbolindex{\tt walk\_turn\_offset}
+\symbolindex{\tt walk\_turn\_sweep\_angle}
+\symbolindex{\tt walk\_turn\_duty\_factor}
+These numeric array symbols configure how much differential adjustment will
+be made to contralateral legs during differential turning for the
+corresponding parameters.  The interpolation of the parameters
+are done the same as they were for {\tt walk\_tripod\_time} symbol.
+
+\symbolitem{\tt triwheel\_tripod\_time}\par
+This numerical symbol tripod preparation and lowering time for the triwheel
+gait. This gait does not incorporate parameter interpolation, so this symbol
+is only a number.
+
+\item{\tt triwheel\_min\_cpg\_period, triwheel\_max\_cpg\_period}\par
+\symbolindex{\tt triwheel\_min\_cpg\_period}
+\symbolindex{\tt triwheel\_max\_cpg\_period}
+These numerical symbols configure the minimum and the maximum leg rotation
+period for the variable speed control of the triwheel gait. Based on the
+forward command setting, \RHexWalker\ chooses a value in between to obtain
+different walking speeds.
+
+\symbolitem{\tt triwheel\_turn\_sweep\_angle}\par
+This numerical symbol configures the differential adjustment in the sweep
+angles of contralateral legs to obtain differential turning in the triwheel
+controller. Once again, there is no interpolation involved, so this symbol
+does not require an array input.
+\end{itemize}
+
+\subsection{The \StandMachine\ Module}
+\label{sec:stand_machine}
+
+\begin{moduleheader}
+\classname{\StandMachine} \mline
+\modulebase{\StateMachine} \mline
+\modulename{standmachine} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{\PositionControl, \EncoderReader.}
+\end{moduleheader}
+
+The \StandMachine\ module is a controller which stands the robot up from a
+stationary position. Once activated, it commands the legs first to go to a
+horizontal position, and then go downwards in synchrony to push the body
+up. \\
+
+\constructors
+
+\begin{itemize}
+\item{\tt StandMachine( void ); }
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void setParams( StandParam\_t *p ); } \par
+This method can be used to set all the standing parameters. See
+\S\ref{sec:special_types} for an explanation of the data type {\tt
+  StandParam\_t}.
+\item{\tt void getParams( StandParam\_t *p ); } \par
+This method returns the current standing parameters in {\tt *p }.
+\item{\tt bool isDone( void ); } \par
+This method returns a flag indicating whether the standing controller
+is done with its operation, which means that all leg targets have
+reached the vertical position.
+\end{itemize}
+
+\configsymbols
+
+\begin{itemize}
+\symbolitem{\tt stand\_one\_time}\par
+This numeric symbol configures the time in seconds for the legs to get into
+horizontal position.
+\symbolitem{\tt stand\_two\_time}\par
+This numeric symbol configures the time in seconds for the legs to get lift
+the body up from their horizontal position.
+\symbolitem{\tt stand\_adj\_time}\par
+This numeric symbol configures the period between succesive leg offset
+adjustments at the end of standing. Primarily used for runtime adjustment
+leg offset for things like inclination compensation. The {\tt
+  setLegOffset()} should be used for such compensation actions.
+\symbolitem{\tt stand\_kp}\par
+This numeric array variable configures the proportional gains for the legs
+during standing.
+\symbolitem{\tt stand\_kd}\par
+This numeric array variable configures the derivative gains for the legs
+during standing.
+\end{itemize}
+
+\subsection{The \SitMachine\ Module}
+\label{sec:sit_machine}
+
+\begin{moduleheader}
+\classname{\SitMachine} \mline
+\modulebase{\StateMachine} \mline
+\modulename{sitmachine} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{\PositionControl, \EncoderReader.}
+\end{moduleheader}
+
+The \SitMachine\ module is a controller which makes the robot sit down from
+a standing position. Once activated, the algorithm commands the legs to go
+to a horizontal position, lowering the robot to the ground. \\
+
+\constructors
+
+\begin{itemize}
+\item{\tt SitMachine( void ); }
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt bool isDone( void ); } \par
+This method returns a flag indicating whether the sitting controller
+is done with its operation, which means that all leg targets have
+reached the horizontal position.
+\end{itemize}
+
+\configsymbols
+
+\begin{itemize}
+\symbolitem{\tt sit\_time}\par
+Time to bring the legs to their horizontal position (sec).
+\end{itemize}
+
+\section{Utility Modules}
+
+\subsection{The \DataLogger\ Abstract Base Class}
+
+\begin{moduleheader}
+\classname{\DataLogger} \mline
+\modulebase{\Module} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{None}
+\end{moduleheader}
+
+The DataLogger class is a general purpose utility to store data vectors in
+memory while the robot is operational and save them later to files in a
+variety of data formats. It is defined as an abstract base class. As a
+consequence, it cannot be directly instantiated. Instead, a new class must
+be derived from DataLogger, choosing the size of the data vector and the
+contents of the log.
+
+The period of the module when added with the {\tt MMAddModule()} function
+call determines the frequency at which the data vector is logged. Moreover,
+the {\tt logging\_period} symbol provides means of configuring this frequency
+independent of the module's own period. Please see the symbol explanation
+below for details.
+
+\constructors
+
+\begin{itemize}
+\item{\tt DataLogger( void );} \par
+
+This constructor creates a DataLogger with the default name "datalogger",
+index 0 and a data vector length of 1. These values, except the record
+length, cannot be changed once the class is instantiated, which is also true
+for all the other constructors of DataLogger.
+
+\item{\tt DataLogger( int reclen );} \par
+
+This constructor creates a DataLogger with the default name "datalogger",
+module index 0 and a data vector length of {\tt reclen}. 
+
+\item{\tt DataLogger( int reclen, int index );} \par
+
+This constructor creates a DataLogger with the default name "datalogger",
+the specified {\tt index} and a data vector length of {\tt reclen}.
+
+\item{\tt DataLogger( int reclen, char *name );} \par
+
+This constructor creates a DataLogger with the specified {\tt name},
+index 0 and a data vector length of {\tt reclen}.
+
+\item{\tt DataLogger( int reclen, char *name, int index );} \par
+
+This constructor creates a DataLogger with the specified {\tt name},
+{\tt index} and a data vector length of {\tt reclen}.
+
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt virtual void  fillRecord ( float *f ) = 0;} \par
+This method is a pure virtual function and needs to be defined by the
+inherited classes. It is where the contents of the data vector to be logged
+are filled in. The inherited definition must fill in the contents of the
+vector {\tt *f} with whichever variables need to be logged.
+
+\item{\tt void reset( void );} \par
+This method resets the contents of the DataLogger by deleting all previously
+logged data.
+
+\item{\tt void reset( int new\_reclen );} \par
+This method also resets the contents of the DataLogger by deleting all
+previously logged data. However, in doing so, it also sets the data vector
+length of the logger to {\tt new\_reclen}.
+
+\item{\tt void setLoggingPeriod( int p );} \par
+This method sets the logging period for the logger, overriding the value
+chosen through the {\tt logging\_period} configuration symbol. The unit of
+{\tt p} is module manager steps (also milliseconds in the current
+implementation).
+
+\item{\tt void exportToFile ( char *basefilename, DL\_OUTPUT\_TYPE type, char** names );} \par
+This method dumps the current contents of the logger into a file specified
+by {\tt *basefilename}. The suffix {\tt .data} is appended to the end of
+this base filename.
+
+The next two arguments are optional and can be left unspecified. The {\tt
+type} argument specifies the type of the output file. Currently the only
+supported type is {\tt DL\_ASCII}, which outputs columns of ascii
+numbers. The default value for this argument (if left unspecified), is {\tt
+DL\_ASCII}.
+
+The {\tt names} argument can be used to specify names for the variables that
+are being logged. This method then creates a Matlab executable file, {\tt
+  basefilename.m}, which, when executed from within Matlab, loads the
+corresponding data file and assigns Matlab variables with the specified
+names to appropriate columns of the data. If {\tt NULL} is passed, the data
+logger does not generate this file. The default value, in case this argument
+is left unspecified) is {\tt NULL}.
+
+\item{\tt int exportViaNet( char *basefilename, DL\_OUTPUT\_TYPE type, char
+**names );} \par 
+This method has very similar functionality to the method {\tt
+exportToFile()}. However, after writing the data files to disk, this
+function transfers them over the network to the host specified by the {\tt
+rhexftphost} config symbol into the directory specified by {\tt
+rhexftppath}. Moreover, the configuration symbols {\tt rhexftpuser} and {\tt
+rhexftppasswd} must be assigned with the username and password on the target
+host.
+\end{itemize}
+
+\configsymbols
+
+\begin{itemize}
+
+\symbolitem{\tt logging\_period}\par 
+
+This numeric config symbol specifies the period of logging in milliseconds
+(more accurately, module manager steps). It takes into account the module
+period of the data logger, but the logging period is not an integer multiple
+of the module period, the actual time difference between data samples might
+be somewhat uneven. The default is 1.
+
+\symbolitem{\tt rhexftphost}\par
+This string config symbol specifies the hostname for FTP transfer of the
+data files exported through  {\tt int exportViaNet()}.
+\symbolitem{\tt rhexftppath}\par
+This string config symbol specifies the target directory for FTP transfer of
+the data files exported through  {\tt int exportViaNet()}.
+\symbolitem{\tt rhexftpuser}\par
+This string config symbol specifies the username on the target host for FTP
+transfer of the data files exported through  {\tt int exportViaNet()}.
+\symbolitem{\tt rhexftppasswd}\par
+This string config symbol specifies the password on the target host for FTP
+transfer of the data files exported through  {\tt int exportViaNet()}.
+\end{itemize}
+
+\examplecode
+
+Here is an example of how to define a data logger class, inherited from
+DataLogger.
+
+\begin{codesegment}
+class ExampleLogger : public DataLogger {
+  public:
+    ExampleLogger( void ) : DataLogger( 2, "examplelogger", 0);
+
+    void fillRecord( float *f ) {
+      f[0] = MMReadTime();
+      f[1] = sin( 2.0 * M_PI * MMReadTime() );
+    }
+};
+\end{codesegment}
+
+This code segment defines an ExampleLogger module, with name {\tt
+"examplelogger"} and index 0, logging the array \{$t$, $\sin t$\}. Note that
+this module must be explicitly created and added to the module manager
+somewhere (usually in main()) to be of any use.
+
+*WARNING* : If you redefine any of the module functions, you must explicitly
+call the corresponding method of the DataLogger base class at the end of the
+module function. For example, if ExampleLogger were to redefine the init()
+module function, it would have to look like this:
+
+\begin{codesegment}
+ExampleLogger::init( void ) {
+
+  ( some code goes here.... )
+
+  DataLogger::init();
+};
+\end{codesegment}
+
+Otherwise, the data logging functionality will not work properly.
+
+\subsection{The \RHexLogger\ Generic Logging Module}
+
+\begin{moduleheader}
+\classname{\RHexLogger} \mline
+\modulebase{\Module} \mline
+\moduleflags{single-user, non-polling}
+\usedmodules{\DataLogger}
+\end{moduleheader}
+
+This module provides a variety of logging options, including a set of 140
+standard variables, 16 global variables as well as functionality to add new
+named variables to be logged at runtime. The set of variables to be logged
+each time the program is run is determined by the configuration file (see
+the symbol explanations below), so subsequent runs may log different
+variables without recompilation. All relevant configuration files should be
+read {\em before} the RHexLogger module is created (i.e. before {\tt
+RHexAddStdModules()} or similar functions are called).\\
+
+When exporting data to a file (or over the network), RHexLogger also creates
+supplies the DataLogger (see above) with the names of the variables,
+generating an associated Matlab file to load the variables into the Matlab
+workspace with the same names. A very useful feature of RHexLogger is the
+ability to include the current date, time and a unique log index as part of
+the filename specification in the configuration file using the identifiers
+{\em \%d \%t} and {\em \%i}.
+
+An array of 16 floating point global variables {\tt rhexLoggerGlobalVars}
+are defined by RHexLogger with the names {\tt user\_defined0} through {\tt
+user\_defined15}. When these variables are enabled for logging in the config
+file, RHexLogger records the values of these global variables. This facility
+can be used for quick debugging, where you can simply assign the value you
+would like to be logged to one of these global variables. Unfortunately, it
+is not possible to change the names of these variables.
+
+Another custom functionality is the ability to add new variables to be
+logged at runtime. This is is mostly for debugging purposes as it requires
+recompilation for adding and removing new variables. However it does present
+the ability to define variables with custom names, which is useful for
+archiving the data files with more meaningful names for custom variables
+than {\tt user\_defined5}. This is accomplished through the methods {\tt
+  addNewVar()} and {\tt addNewFunc()}. These function must be called {\em
+  after} the RHexLogger has been created and added to the module manager
+(i.e. after RHexAddStdModules() has been called). The newly added variables
+are appended at the end of the variable list configured by {\tt
+  rhexloggervars} configuration variable.
+
+One word of caution is that, adding new variables is possible only when the
+module is INACTIVE. Moreover, adding new variables resets the contents of
+the data logger, erasing all previously logged content because it
+effectively changes the size of the data array being logged.
+
+\constructors
+
+\begin{itemize}
+\item{\tt RHexLogger( void )}\par
+\end{itemize}
+
+\localinterface
+
+\begin{itemize}
+\item{\tt void exportToFile( DL\_OUTPUT\_TYPE type = DL\_ASCII ); }\par
+Calls the exportToFile method of the underlying \DataLogger\ member,
+defaulting to output type DL\_ASCII. The filename is automatically generated
+using the contents of the {\tt rhexloggerbasefile} configuration symbol.
+
+\item{\tt void exportViaNet( DL\_OUTPUT\_TYPE type = DL\_ASCII ); }\par
+Calls the exportViaNet method of the underlying \DataLogger member,
+defaulting to output type DL\_ASCII. NOTE: Since none of the other data 
+types have even been instantiated and it is doubtful whether they ever 
+will, the user does not even need to worry about it, and can simply
+call both export functions with no parameters.
+
+\item{\tt void reset( void ); }\par
+Resets the \DataLogger\ and increments the index of the logging
+session. During a particular run, \RHexLogger\ keeps track of a unique
+logging index to distinguish between separate logging sessions during each
+run. Every reset increments this index by one.
+
+\item{\tt void setLoggingPeriod( int period ); }\par
+Resets the logging period of the \DataLogger.
+
+\item{\tt Strings getVariables( void ); }\par
+Returns a Strings object containing the names of all of the variables
+currently being logged by \RHexLogger, in the order of logging.
+
+\item{\tt char* getLastFilename( void ); }\par
+Returns a c-string consisting of the filename most recently used by
+the logger to export.
+
+\item{\tt void addNewFunc( char* name, RHexLogger::logFnPtr func, int index );}\par
+
+Adds a variable {\tt name} to the logger. Takes a function pointer as its
+second parameter. The supplied function should take an integer as its
+argument, selecting between different values of the function and return a
+{\tt float}. While active, RHexLogger will call this function with the
+specified index and record the result.
+
+\item{\tt void addNewVar( char* name, float* var ); }\par
+This method adds a new variable named {\tt name} to the logger. The content
+of the new variable is specified through the actual address of a {\tt float}
+variable, so it is imperative for the user to ensure that this address 
+always points to a valid memory location. Although it is possible to pass
+pointers to class data members using this interface, be careful not to
+deallocate the class or the member.
+
+\end{itemize}
+
+\configsymbols
+
+\begin{itemize}
+\symbolitem{\tt rhexloggerbasefile}\par This string symbol is the
+basefilename for output files created by \RHexLogger. Two output files,
+\emph{basefilename.m} and \emph{basefilename.data} are created. In order to
+log multiple sessions without changing this symbol, the following
+identifiers can be included anywhere in the string (note: Index is the index
+of the logging session):
+
+\begin{center}
+\begin{tabular}{l|l|l}
+    {\bf Symbol} & {\bf Meaning} & {\bf Format}\\
+    \hline
+    {\tt \%i} & Index of the logging session (reset count) & {\tt iiii}\\
+    {\tt \%d} & Current date & {\tt yymmdd}\\
+    {\tt \%t} & Current time & {\tt hhmmss}\\
+\end{tabular}
+\end{center}
+
+The .m file is a script that imports all of the logged data to MatLab
+worspace when executed from within Matlab, assigning them to Matlab
+variables with the same names as the logger variables.
+
+\symbolitem{\tt rhexloggervars}\par
+This symbol refers to a list of strings, such as \{ ``name1'' ``name2''
+... ``lastvarname'' \}. Variable names in the list must be the exact names
+that the logger can recognize (see \S\ref{tab:hwlogvars}). If no variables
+are specified in the configuration file, then the logger does nothing and
+the output file is left blank.
+\end{itemize}
+
+NOTE: In the following table, the method calls under the column ``Value to
+be logged'' assume that all standard RHexLib modules have been added through
+{\tt RHexAddStdModules()}. However, this is not required because RHexLogger
+itself uses MMFindModule() to locate all the modules it requires to function
+properly. 
+
+\input{RHexlogtable}
+
+\subsection{The \VirtualMotor\ Module}
+\subsection{The \VirtualInput\ Module}
+\subsection{The \PulseWidth\ Module}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[!ht]
+  \centering
+  \rotcaption{Summary of standard modules and state machines in \rhexlib.}
+  \begin{sideways}
+    \epsfig{figure=ComponentSummary.eps,width=7.5in}
+    \label{fig:module_summary}
+  \end{sideways}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+
+

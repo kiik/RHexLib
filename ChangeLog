@@ -1,0 +1,71 @@
+2001-07-18  Uluc Saranli  <ulucs@lodos>
+
+	- Changed all references to CLOCK outside the module manager to a
+	double type whose unit is seconds.
+	- Changed the Profiler interface from CLOCK to double
+	- Changed all controllers to use the new Profiler interface
+	- Shifted the getCalibration() and setCalibration completely to
+	DCMotorHW and removed them from Hardware.
+	- Shifted getParams and setParams from Hardware to DCMotorHW and
+	eliminated some unnecessary parameters.
+	- Changed RHexWalker to support alternating triwheel mode and
+	associated config file variables.
+	- Added drive_compensation_enable functionality to MMotor and
+	McMotor classes.
+	- Changed PositionControl to allow disabling of back EMF compensation
+	- Improved the Makefile tools to better handle auxiliarly libraries
+	- Shifted FlipMachine and TouchdownDetector to MichLib.
+	- Added relative_time variable to RHexLogger
+	- Incorporated Laura's improvement to RHexLogger in adding new variables.
+	- Placed inline documentation on all Makefiles
+
+2001-07-18  Laura McWilliams  <lmcwil@lodos>
+
+	 -slight name change to one function
+	 -Slight changes to header to reflect new methods and slight name
+	 changes (still is backwards compatible)
+	 -Updated RHexLogger documentation
+
+2001-07-18  Uluc Saranli  <ulucs@lodos>
+
+	- Started the hardware libraries section
+	- Updated the PositionControl documentation
+	- Revised the Supervisor quick start docs
+	- Rearranged the module manager sections
+	- Minor updates
+	- Readded the files as executables
+	- Removed some files to readd them as executables
+
+2001-07-18  eklav  <eklav@lodos>
+
+	- Fixed sm-setup.pl so that it includes the new license in the
+	files it creates
+	- Changed the Makefile to set permissions on the scripts in this
+	directory
+	- finished state machine section in the quick start chapter
+
+2001-07-16  eklav  <eklav@lodos>
+
+	- Added state machine pix to the docs and fixed some typos
+
+2001-07-16  Uluc Saranli  <ulucs@lodos>
+
+	- Many small bugfixes.
+	- Revised and completed datatypes.
+	- Revised and completed standard module descriptions.
+	- Added three Hardware interface sections to quick starts section
+
+2001-07-13  Uluc Saranli  <ulucs@lodos>
+
+	- Improved the root Makefile tarball target
+	- Removed a warning from StandMachine
+	- Took out -pg flag from Makefiles
+	- Added the config files back in the examples directory
+	- Shifted the Supervisor stuff to individual libraries
+	- Fixed some SimSect related bugs
+
+2001-07-12  Uluc Saranli  <ulucs@lodos>
+
+	- Changed and added License headers
+	- Imported initial version
+

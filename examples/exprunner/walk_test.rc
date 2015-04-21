@@ -1,0 +1,195 @@
+#
+# This file is part of RHexLib, 
+#
+# Copyright (c) 2001 The University of Michigan, its Regents,
+# Fellows, Employees and Agents. All rights reserved, and distributed as
+# free software under the following license.
+# 
+#  Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 
+# 1) Redistributions of source code must retain the above copyright
+# notice, this list of conditions, the following disclaimer and the
+# file called "CREDITS" which accompanies this distribution.
+# 
+# 2) Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions, the following disclaimer and the file
+# called "CREDITS" which accompanies this distribution in the
+# documentation and/or other materials provided with the distribution.
+# 
+# 3) Neither the name of the University of Michigan, Ann Arbor or the
+# names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+######################################################################
+# $Id: walk_test.rc,v 1.2 2001/08/14 03:09:27 ulucs Exp $
+#
+# This file is contains application specific configuration symbols for
+# the walk_test example
+#
+# Created       : Uluc Saranli, 08/12/2001
+# Last Modified : Uluc Saranli, 08/12/2001
+#
+######################################################################
+
+###################################################################
+# WalkExperiment parameter sweep configuration
+#
+
+# This symbol configures which mode of the RHexWalker should be used
+# in the setup phase.
+walkexp_setup_mode = "tripod";
+
+# This sets the number of experiments to run for a single param set.
+walkexp_repeats = 2;
+
+# The following symbols set the ranges for the parameter sweep. They
+# must be array of floats with 3 elements, having the following
+# format:
+#
+# { numofvalues min_value max_value }
+
+walkexp_cpgperiod_range = { 2 0.53 0.83 };
+walkexp_sweepangle_range = { 2 0.6981 0.8981 };
+walkexp_dutyfactor_range = { 1.0 0.6226 0.6226 };
+walkexp_legoffset_range = { 1.0 0 0 };
+walkexp_smooth_range = { 1.0 0.10 0.10 };
+walkexp_turnoffset_range = { 1.0 0.113 0.113 };
+walkexp_turnduty_range = { 1.0 0.0 0.0 };
+walkexp_turnsweep_range = { 1.0 0.0 0.0 };
+walkexp_kp_range = { 1.0 24.03 24.03 };
+walkexp_kd_range = { 1.0 0.6727 0.6727 };
+
+###################################################################
+# LOGGING CONFIGURATION
+#
+
+logging_enabled = 1.0; # or zero if you want to turn it off
+logging_period = 1;
+
+rhexloggerbasefile = "exp%d_%t_%i";
+rhexloggervars = { "time" "hw_power_voltage" "hw_power_current" "mod_enc_pos0" "mod_poscontrol_pos0" "hw_accel_y" "hw_dials5" };
+
+
+rhexftphost   = "rhexgate"; # you need all the following
+rhexftpuser   = "rhex";     # to do ftp export
+rhexftppasswd = "pc104goo";
+rhexftppath   = "~/testdata";
+
+# This file will be the cumulative log file for the experiment runner.
+exprunner_filename = "walk_test_01";
+
+
+###################################################################
+# STANDING, SITTING AND WALKING CONTROLLER PARAMETERS
+#
+
+# gains for standing
+stand_kp = { 24.03 24.03 24.03 24.03 24.03 24.03 };
+stand_kd = { 0.6727 0.6727 0.6727 0.6727 0.6727 0.6727 };
+
+# times for the two phases of standing
+stand_one_time = 0.8;
+stand_two_time = 0.4;
+stand_adj_time = 0.2;
+
+# time for sitting
+sit_time = 1.0;
+
+###################################################################
+# WALKING PARAMETERS
+# each of these is an array of four elements, one for each walking
+# speed specified by the dip switches on the robot
+#
+
+# gains for sitting, standing and walking
+walk_kp = { 24.03 24.03 24.03 24.03 24.03 24.03 };
+walk_kd = { 0.6727 0.6727 0.6727 0.6727 0.6727 0.6727 };
+
+# walk speed increment e.g: +/- .2. Walking speed changes in the range [0,1]
+walk_speed_increment = 0.05;
+
+####################################
+# Walking Gait parameter settings
+####################################
+# The speed settings for the corresponding parameters
+# All settings must have the same length as walk_speed
+walk_speeds = { 0.0 1.0 2.0 3.0 };
+
+# cycle_time is the time for one leg to complete a cycle
+walk_cpg_period = { 0.9 0.8 0.53 0.53 };
+
+# time to lift tripod, from standing, so as to start walking
+walk_tripod_time = { 0.45 0.4 0.265 0.265 };
+
+# the percentage of time the leg thinks it is on the ground 
+walk_duty_factor = { 0.6875 0.69 0.6226 0.56 };
+
+# the angle swept by the leg on the ground (in radians), centered around offset
+walk_sweep_angle = { 0.6 0.6109 0.6981 0.6981 };
+
+# angle offset used during straight walking (in radians)
+walk_leg_offset_forward = { -0.15 -0.15 -0.175 -0.175 };
+walk_leg_offset_backward = { 0.12 0.15 0.15 0.14 };
+
+# smooths out the transitions between stance to swing
+# 0.05 means 5 percent of the cycle_time for each transition
+# if cubic = 1.0 then use cubic splines
+walk_smooth_factor = { 0.09 0.09 0.11 0.11 };
+walk_cubic = 1.0;
+
+# Use this if cubic is off
+#walk_smooth_factor = { 0.05 0.05 0.05 0.05 };
+
+# amount to offset legs during turning (in radians)
+walk_turn_offset = { 0.105 0.131 0.113 0.113 }; 
+
+# amount to change sweep angle when turning (in radians)
+walk_turn_sweep_angle = { 0.0 0.0 0.0 0.0 };
+
+# amount to change "duty factor" when turning 
+walk_turn_duty_factor = { 0.0 0.0 0.0 0.0 };
+
+###############################################
+# Alternating triwheel  Gait parameter settings
+###############################################
+
+# Minimum allowed leg rotation period
+triwheel_min_cpg_period = 0.3;
+
+# Maximum allowed leg rotation period
+triwheel_max_cpg_period = 2.0;
+
+# time to lift tripod, from standing, so as to start walking
+triwheel_tripod_time = 0.3;
+
+# amount to change sweep angle when turning (in radians)
+triwheel_turn_sweep_angle = 0.1;
+
+###################################################################
+# INCLINATION COMPENSATION PARAMETERS
+
+forward_gamma = 0.55;
+forward_iota = 0.1;
+forward_ksi = 0.3;
+forward_epsilon = 0.045;
+
+backward_gamma = 0.0;
+backward_iota = 0.1;
+backward_ksi = 0.3;
+backward_epsilon = 0.045;
+
+

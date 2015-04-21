@@ -1,0 +1,27 @@
+
+# DO NOT DELETE
+
+./VirtualMotor.o: VirtualMotor.hh
+./VirtualMotor.o: /home/meelik/ut/RHex/RHexLib/include/basicmath.hh
+./VirtualMotor.o: /home/meelik/ut/RHex/RHexLib/include/types.hh
+./VirtualMotor.o: /home/meelik/ut/RHex/RHexLib/include/vast.hh
+./VirtualMotor.o: /home/meelik/ut/RHex/RHexLib/include/Strings.hh
+./VirtualMotor.o: /home/meelik/ut/RHex/RHexLib/include/Floats.hh
+./VirtualMotor.o: /home/meelik/ut/RHex/RHexLib/include/ModuleManager.hh
+./VirtualMotor.o: /home/meelik/ut/RHex/RHexLib/include/Hardware.hh
+./VirtualMotor.o: /home/meelik/ut/RHex/RHexLib/include/SymbolTable.hh
+./VirtualMotor.o: /home/meelik/ut/RHex/RHexLib/include/Tokenizer.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/StdModules.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/VirtualHW.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/Hardware.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/types.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/vast.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/Strings.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/Floats.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/ModuleManager.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/SymbolTable.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/Tokenizer.hh
+./VirtualHW.o: VComponents.hh VirtualMotor.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/basicmath.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/VirtualInput.hh
+./VirtualHW.o: /home/meelik/ut/RHex/RHexLib/include/StateMachine.hh

@@ -1,0 +1,166 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: faq.tex,v 1.5 2001/07/19 16:35:56 ulucs Exp $
+%
+% Created       : Uluc Saranli, 01/06/2001
+% Last Modified : Uluc Saranli, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Frequently Asked Questions}
+
+\section{Installation}
+
+\begin{enumerate}
+\item
+\end{enumerate}
+
+\section{Makefiles and Compiling}
+
+\begin{enumerate}
+\item
+\end{enumerate}
+
+\section{Module Manager and Modules}
+
+\begin{enumerate}
+\item{In the function call {\tt MMGrabModule(moduleptr,this)}, what does the
+    {\tt this} keyword do?}\par
+The C++ keyword {\tt this} is a pointer to the class object for which the
+currently executing method was called. In this case, it points to the
+current module.
+
+\item{What happens when I try to read more than one configuration file with
+    {\tt MMReadConfigFile()}?}\par
+The contents of the new configuration file are appended to the existing
+symbol table. If a symbol is redefined, the new value replaces the old one.
+
+\item{What happens if two modules have the same order value?}\par
+The order in which their update functions are called in the same module
+manager cycle is unspecified. It may depend on the time of the day, the
+weather, barometric pressure etc. etc.
+\end{enumerate}
+
+\section{State Machines}
+
+\begin{enumerate}
+\item{Why do state machines have no {\tt update()} method?}\par
+
+The \StateMachine\ class is derived from the \Module\ class and it defines
+the update function itself. It performs various importnat tasks such as
+checking the currently active events, calling the during() function of the
+current state and performing state transitions as necessary.
+
+When you need the update functionality of modules in state machines, you
+should use the {\tt during()} functions of states. The during function of
+the current state is called every time the state machine module itself is
+updated.
+\end{enumerate}
+
+\section{Hardware Access}
+
+\begin{enumerate}
+
+\item{What are the resolutions of MMReadTime() and MMReadUTime()?}\par
+The resolutions of both depend on the operating system as well as the
+actual timer hardware on the CPU board. On QNX, {\tt MMReadTime()} has a
+resolution equal to the system timer, which in RHexLib is set to 1
+milliseconds. In contrast, {\tt MMReadUTime()} uses timers with the highest
+available resolution. In QNX, on a 486, it has 0.2 microseconds or so
+resolution whereas on a Pentium, it uses the CPU's instruction counter and
+has 0.003 microseconds resolution.
+
+\item{How do I decide when to add a new component to the Hardware class and
+    what its interface should be?}\par
+\end{enumerate}
+
+\section{How do I do ...?}
+
+\begin{enumerate}
+\item
+\end{enumerate}
+
+\section{C++ Related}
+
+The questions in this section relate to general C++ issues. A good C++ book
+will always be a better reference than this section.
+
+\begin{enumerate}
+\item{Why is there no destructor for some classes?}\par
+You need to define a destructor for a class, if there are explicit
+deallocations or cleanup operations that you need to do. Usually, if you
+have allocated any memory in the constructor, you need to deallocate them in
+the destructor. For hardware related classes, the destructor usually
+uninitializes the hardware and leaves it in a clean state. If you do not
+need such operations, you do not need to define a destructor. Deletion of
+the class object itself is done by code generated by the compiler.
+
+\item{What is the {\tt virtual} keyword I see in some of the class
+    definitions? What is the meaning of {\tt virtual mymethod( void ) = 0}?}
+Virtual functions are a very useful feature of C++. They allow you to
+override the method definitions of a class by its derived classes. This way,
+if a derived class wants to provide a better, or more specific
+implementation of a method which is already defined by its parent class,
+this possible if the parent class had defined its method to be "virtual".
+
+The {\tt = 0} at the end of a virtual method declaration defines the
+function to be {\em pure virtual}. This is a special virtual function, in
+that the parent class does not define what this function does {\em at
+  all}. It only declares the arguments, the name, and the return value of
+the method and leaves it up to its derived classes to define the
+function. This is a very useful way for a class to define a {\em uniform 
+  interface}, rather than an implementation. For example, the \Module\ class
+has many pure virtual functions, which {\em must} be defined by all the
+derived module classes, enforcing a uniform interface for all of them.
+
+\item{What are abstract base classes?}
+A class which has at least one pure virtual function as one of its methods
+is an abstract base class. Instances of abstract base classes cannot be
+created (i.e. the statement {\tt new Module} would fail to compile) because
+some of their methods are left undefined. It is impossible to create an
+object whose methods are still undefined. These classes only become useful
+when you derive a class from them. That is why they are called (abstract)
+base classes.
+\end{enumerate}
+
+\section{Common Pitfalls}
+
+\begin{enumerate}
+\item
+\end{enumerate}
+

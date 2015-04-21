@@ -1,0 +1,135 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: environments.tex,v 1.4 2001/07/19 16:35:56 ulucs Exp $
+%
+%  This file defines LaTeX environments for various styles in the documentation
+%
+% Created       : Uluc Saranli, 01/06/2001
+% Last Modified : Uluc Saranli, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ------------------------------------------------------- %
+% Environments for data types -------------------------%
+
+% Width of the boxes used around various environments below -------- %
+\def\codeboxwidth{5.9in}
+
+% Commands to encapsulate a part of text in a box ------------------ %
+\newbox\TextBox
+\def\starttextbox{\global\setbox\TextBox\hbox\bgroup\ignorespaces}
+\def\stoptextbox{\egroup}
+
+% Environment for outputting data type definitions ----------------- %
+%\newenvironment{datatype}
+%  {\begin{center}
+%      \starttextbox
+%        \begin{tabular}{l}} {
+%        \end{tabular}
+%      \stoptextbox
+%      \framebox[5.9in][l]{\box\TextBox}
+%    \end{center}
+%}
+\newenvironment{datatype}
+  {\begin{center}
+      \begin{tabular}{|p{6.0in}|}\hline} {
+       \hline\end{tabular}
+    \end{center}}
+
+% New float type for Program Source code listings ------------------ %
+\floatstyle{boxed}
+\floatname{codefloat}{Listing}
+\newfloat{codefloat}{thp}{code}
+
+% Verbatim environment for code segments. Usually used inside codefloat ------ %
+\newenvironment{codesegment}
+  {\verbatim}
+  {\endverbatim}
+
+% Environment for outputting function prototypes ------------------- %
+%\newenvironment{prototype}
+%  {\vspace{0.15in}\begin{center}
+%      \starttextbox\tt
+%        \begin{tabular}{l}} {
+%        \end{tabular}
+%      \stoptextbox
+%      \framebox[\codeboxwidth][l]{\box\TextBox}
+%   \end{center}}
+\newenvironment{prototype}
+  {\begin{itemize}\item
+      \tt} {\end{itemize}}
+
+\newenvironment{classdef}{\small \verbatim} {\endverbatim}
+
+% Environment for module description header ------------------------ %
+\newenvironment{moduleheader}
+  {\begin{center}
+      \begin{tabular}{| >{\bf \hfill} p{1.2in}p{4.4in}|}
+        \hline} {
+        \hline
+      \end{tabular}
+    \end{center}}
+\newcommand{\classname}[1]{Class Name: & #1 \\}
+\newcommand{\modulebase}[1]{Base Classes: & #1 \\}
+\newcommand{\modulename}[1]{Module Name: & "#1" \\}
+\newcommand{\moduleflags}[1]{Module Flags: & #1 \\}
+\newcommand{\usedmodules}[1]{Used Modules: & #1 \\}
+\newcommand{\mline}{}
+\newcommand{\constructors}{{\bf Class constructors:}}
+\newcommand{\localinterface}{{\bf Local interface:}}
+\newcommand{\datatypes}{{\bf Data types:}}
+\newcommand{\configsymbols}{{\bf Configuration Symbols:}}
+\newcommand{\symbolitem}[1]{\item{#1}\index{Configuration symbols!#1}}
+\newcommand{\symbolindex}[1]{\index{Configuration symbols!#1}}
+\newcommand{\examplecode}{{\bf Example code:}}
+
+% Definitions of Synopsis and Details headings --------------------- %
+\newcommand{\detailsheading}
+ {\par\vspace{0.15in}\noindent\hspace{0.3in}
+   {\bf \large Details}\par}
+
+\newcommand{\synopsisheading}
+ {\par\vspace{0.15in}\noindent\hspace{0.3in}
+   {\bf \large Synopsis}\par}
+
+% Some useful macros for include, define and typedef statements ---- %
+\newcommand{\typedefcmd}[1]{{\tt typedef #1}}
+\newcommand{\includecmd}[1] {{\tt \#include #1}}
+\newcommand{\definecmd}[1] {{\tt \#define #1}}
+
+

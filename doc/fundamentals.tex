@@ -1,0 +1,214 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: fundamentals.tex,v 1.5 2001/07/24 02:06:29 ulucs Exp $
+%
+% Created       : Uluc Saranli, 01/06/2001
+% Last Modified : Uluc Saranli, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Fundamentals}
+\label{sec:fundamentals}
+
+\section{Basic Data Types}
+
+This section describes the basic data types used in \rhexlib.
+
+\begin{codesegment}
+#include "types.hh"
+\end{codesegment}
+
+\begin{datatype}
+\typedefcmd{\bool}; \\
+\end{datatype}
+
+The type \bool\ is the standard boolean type. Variables of this type can
+only have the value {\tt true} or {\tt false}.
+
+\begin{datatype}
+\typedefcmd{\vast}; \\
+\typedefcmd{\uvast}; \\
+\end{datatype}
+
+The types \vast\ and \uvast\ are 64 bit signed and unsigned integer types
+respectively. In some platforms, these data types are implemented through
+C++ classes and may not provide all the standard operators for integers.
+
+\begin{datatype}
+\typedefcmd{\intb}; \\
+\typedefcmd{\uintb}; \\
+\typedefcmd{\intw}; \\
+\typedefcmd{\uintw}; \\
+\typedefcmd{\intdw}; \\
+\typedefcmd{\uintdw}; \\
+\typedefcmd{\intqw}; \\
+\typedefcmd{\uintqw}; \\
+\typedefcmd{\uint}; \\
+\end{datatype}
+
+These are signed and unsigned integer types which are guaranteed to have the
+indicated precision on all platforms.
+
+\begin{datatype}
+\typedefcmd{\CLOCK}; \\
+\end{datatype}
+
+The \CLOCK\ type is a a 64 bit signed integer datatype intended to represent
+a time value in microseconds.
+
+\begin{datatype}
+\typedefcmd{\floats}; \\
+\end{datatype}
+
+The \floats\ type is a C++ {\tt struct} holding an array of a known number
+of {\tt float}s. If {\tt x} is of type \floats\ then {\tt x.count} is the
+number of elements in the array and {\tt x.f[0]} through {\tt x.f[count-1]}
+are the elements of the array.
+
+%laura: i added in this next one
+\begin{datatype}
+\typedefcmd{\strings}; \\
+\end{datatype}
+
+The \strings\ type is a C++ {\tt struct} holding an array of a known
+number of {\tt char *}s. If {\tt y} is of type \strings\ then {\tt
+y.count} is the number of elements in the array and {\tt y.s[0]}
+through {\tt y.s[count-1]} are the elements of the array.
+
+\section{Special Data Types} 
+\label{sec:special_types}
+
+This section describes data types and classes used in various components of
+\rhexlib.
+
+% eric: this is not very descriptive -e 
+% uluc: well, I hadn't completed it yet...
+
+\begin{codesegment}
+#include "ModuleManager.hh"
+\end{codesegment}
+
+\begin{datatype}
+\typedefcmd{\mmstep}; \\
+\end{datatype}
+
+The \mmstep\ is an integer type to represent the number of module manager
+steps. The time period corresponding to a number of module manager steps
+depends on the period of the module manager, which can be queried with the 
+{\tt MMGetStepPeriod()} function (see \S\ref{sec:mm_info}).
+
+\begin{codesegment}
+#include "MotorControl.hh"
+\end{codesegment}
+
+\begin{datatype}
+\typedefcmd{\motortarget}; \\
+\end{datatype}
+
+The \motortarget\ type is a C++ {\tt struct} holding the target
+position, velocity and acceleration for a motor. The following fields for
+\motortarget\ are defined in {\tt MotorControl.hh}:
+
+\begin{itemize}
+\item{{\tt double pos}: Target position ( rad )}
+\item{{\tt double vel}: Target velocity ( rad/s )}
+\item{{\tt double acc}: Target acceleration ( rad/s$^2$ )}
+\end{itemize}
+
+\begin{datatype}
+\typedefcmd{\motorgains}; \\
+\end{datatype}
+
+The \motorgains\ type is a C++ {\tt struct} holding motor control
+gains. The following fields for \motorgains\ are defined in {\tt
+MotorControl.hh}:
+
+\begin{itemize}
+\item{{\tt double kp}: Proportional gain ( Nm/rad )}
+\item{{\tt double kd}: Derivative gain ( Nm/(rad/s) )}
+\item{{\tt double ka}: Acceleration gain ( Nm/(rad/s$^2$) )}
+\end{itemize}
+
+\section{Utility Macros} 
+\label{sec:utility_macros}
+
+This section describes several preprocessor macros that RHexLib defines for
+common tasks.
+
+\begin{codesegment}
+#include "types.hh"
+\end{codesegment}
+
+\begin{datatype}
+\VastToDouble( \CLOCK\ c ) \\
+\VastToLong( \CLOCK\ c ) \\
+\end{datatype}
+
+These macros convert valus of type {\tt vast} to native C++ data types {\tt
+  double} and {\tt long}, respectively. Note that conversion to {\tt long}
+results in loss of information because {\tt vast} is a 64 bit type.
+
+\begin{datatype}
+\ClocksPerSec \\
+\end{datatype}
+
+This constant holds the number of clock ticks per second.
+
+\begin{datatype}
+\ClockToDouble( \CLOCK\ c ) \\
+\ClockToLong( \CLOCK\ c ) \\
+\end{datatype}
+
+These macros convert valus of type \CLOCK\ to native C++ data types {\tt
+  double} and {\tt long}, respectively. Note that conversion to {\tt long}
+results in loss of information because \CLOCK\ is a 64 bit type.
+
+\begin{datatype}
+\ClockToSec( \CLOCK\ c ) \\
+\ClockToMin( \CLOCK\ c ) \\
+\ClockToHour( \CLOCK\ c ) \\
+\SecToClock( double sec ) \\
+\MinToClock( double min ) \\
+\HourToClock( double hr ) \\
+\end{datatype}
+
+These macros convert \CLOCK\ values to seconds, minutes and hours and
+vice-versa.
+
+\section{Code Conventions}
+

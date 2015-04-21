@@ -1,0 +1,201 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: lacvshelp.tex,v 1.2 2001/07/12 17:14:10 ulucs Exp $
+%
+% CVS tutorial documentation.
+%
+% Created       : Laura McWilliams, 05/12/2001
+% Last Modified : Laura McWilliams, 05/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage{hhline}
+\usepackage{alltt}
+
+\setlength{\paperwidth}{8.5in}
+\setlength{\paperheight}{11in}
+
+
+\begin{document}
+
+
+\title{\bf {\Large Laura's Abbreviated Guide to CVS}\\ 
+           {\large (for new Kodlab members)}}
+\author{\large \it Laura McWilliams (lmcwil@umich.edu)}
+\maketitle 
+
+\section*{Introduction}
+These are the steps you must follow to start using CVS in
+Kodlab. Before executing any CVS commands, you must ssh to poyraz,
+because that is where the CVS repository is located. So before you do
+any of the following commands, first type:\\
+{\bf ssh poyraz}\\
+then enter your password when prompted. To exit leave the secure shell 
+(ssh), simply type:\\
+{\bf logout}\\
+I don't think you are stupid, I'm just telling you these things in
+case you don't know :)
+
+
+
+\section{Setting stuff up to use CVS}
+  \subsection{}
+You'll want to set up a text editor because whenever you 
+have to enter a CVS log, it needs to know what editor to open up for
+you. I'd recommend xEmacs. Put this line in your .cshrc file:\\
+      {\bf setenv EDITOR xemacs }\\
+Or, alternatively, you can simply type the above line from the shell
+which you are going to be in when you use cvs, every time. 
+  \subsection{}
+Another line you need to either enter at the shell or
+put in your .cshrc file is this:\\
+      {\bf setenv CVSROOT uniqname@yildiz:/home/uniqname/dirname }\\
+      where dirname is the name of the directory containing the
+      directories which you are keeping track of with CVS.
+  \subsection{} 
+One more environmental variable to set:\\
+      {\bf setenv CVS\_RSH ssh }
+
+
+
+\section{Checking out somebody else's directory (such as RHexLib)}
+  \subsection{} 
+Go to the directory where you want this new directory to
+reside. Do {\it not} create the directory. Type the following line:\\
+      {\bf cvs -d /home/rhex/cvs checkout dirname }\\
+where dirname is the name of the directory in the
+repository. This will also become the name of your directory, which
+will be added by CVS. NOTE: if you cd to /home/rhex/cvs you can see
+which different directories are available to be checked out.
+
+
+
+\section{Creating your own repository with CVS}
+  \subsection{} 
+Go {\it into } the actual directory you want to add and type the
+following line:\\
+      {\bf cvs -d /home/rhex/cvs import dirname uniqname start }\\
+where dirname is the name you desire for your directory, and
+uniqname is your uniqname. NOTE: You should first clean out the
+directory, removing any files you {\it don't } want added to the
+repository, such as object files.
+
+
+
+\section{Keeping your repository updated}
+If you are working with a directory that other people are working on,
+it's wise to update it before you start working, since this reduces
+the risk of making changes that conflict with other people's
+changes. If you want your changes to affect the repository, you must
+commit them. Until you have actually committed your directory, no one
+can see the changes you've made but you.
+  \subsection{} 
+To update your directory, go {\it into} that directory 
+and type:\\
+      {\bf cvs update }\\
+Whenever you update, CVS gives you a bunch of messages that show you
+which files have changed and it will warn you if there are possible
+conflicts (more on that later). So it's not a bad idea to actually
+look at the messages to see which files have been updated (have a U
+next to them) and {\it especially} which have been merged (have a M
+next to them).
+  \subsection{} 
+To commit your directory, go {\it into} that directory 
+and type:\\
+      {\bf cvs commit }\\
+      You will be prompted to enter a log for the changes that you
+have made. Simply save and exit the file it opened up for you after
+you have entered your message. If you have made a bunch of changes,
+but you only want to enter one log message, it will automatically open 
+the same file up for you, so you can simply exit it again. It will ask 
+you if you meant to do this; one of the options is to use the
+same message for all the log entries, so you can pick this option.
+
+\section{Adding and removing files}
+  \subsection{} 
+To add a single file to a repository, go into that
+directory (where the file is already located in your own individual
+copy) and type:\\
+      {\bf cvs add filename }\\
+  \subsection{} 
+To add a directory and all of its contents, do the same thing:\\
+      {\bf cvs add dirname }\\
+  \subsection{} 
+To remove a single file, first delete the file in your
+directory. Then type:\\
+      {\bf cvs remove filename }\\
+  \subsection{} 
+To remove an entire directory, first delete all of the
+individual files in that directory, without deleting the directory itself. Then type:\\
+      {\bf cvs remove -R dirname }\\
+      (Make sure you use a capital R.)Afterward, you can remove the
+directory itself from your own directory.
+
+\section{Pitfalls, other features, etc}
+When a lot of people are modifying the same library, there are a lot
+of chances for things to get screwed up. Fortunately, CVS can save you 
+a lot of headaches.
+  \subsection{} 
+To see the difference between your version of a file and 
+the version in the CVS repository, type:\\
+      {\bf cvs diff filename }\\
+  \subsection{Merged files}
+Merged files (files that will have an M next to them when you do {\bf
+update}) are important to watch for. Whenever CVS notices that you
+have made changes as well as somebody else since the last time you
+committed, it merges the two files together line for line. Oftentimes, 
+you'll be working on a different section of the code than the other
+person was, and there will be no problem. However, it's a good idea to 
+check over the code to make sure nothing weird happened.
+When CVS cannot manage to successfully merge the files on its own, it
+outputs a message to warn you. It also goes into the file in question
+and marks where the problem is with arrow-brackets, like this:\\
+{\bf $>>>>>>>>>$ }\\
+or something. So look for those marks, and you'll see that CVS has
+taken the lines in question and put both versions. You'll have to
+manually merge them yourself if you want the code to actually work.
+
+\section*{Conclusion}
+CVS is a really neat tool and a necessity for us to keep RHexLib in
+order. Plus, if you totally screw up, it's a nice safety net, since
+CVS hangs onto all these old versions of the project. Well, I hope
+you've found this little sheet helpful.
+
+\end{document}

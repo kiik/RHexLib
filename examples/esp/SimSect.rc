@@ -1,0 +1,192 @@
+#
+# This file is part of RHexLib, 
+#
+# Copyright (c) 2001 The University of Michigan, its Regents,
+# Fellows, Employees and Agents. All rights reserved, and distributed as
+# free software under the following license.
+# 
+#  Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 
+# 1) Redistributions of source code must retain the above copyright
+# notice, this list of conditions, the following disclaimer and the
+# file called "CREDITS" which accompanies this distribution.
+# 
+# 2) Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions, the following disclaimer and the file
+# called "CREDITS" which accompanies this distribution in the
+# documentation and/or other materials provided with the distribution.
+# 
+# 3) Neither the name of the University of Michigan, Ann Arbor or the
+# names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+######################################################################
+# $Id: SimSect.rc,v 1.1 2001/08/06 17:01:44 ulucs Exp $
+#
+# Initialization file for the SimSect hardware interface of RHexLib
+#
+# Created       : Uluc Saranli, 03/22/2001
+# Last Modified : Uluc Saranli, 06/27/2001
+#
+######################################################################
+
+####################################################################
+# Initial conditions
+####################################################################
+
+r_x = 0;                # Rigid body position (m)
+r_y = -0.5;
+r_z = 0.18;
+
+v_x = 0.0;              # Rigid body velocity (m/s)
+v_y = 0.0;
+v_z = 0.0;
+
+####################################################################
+# hexaped platform parameters
+####################################################################
+
+body_mass = 7;          # Rigid body mass (kg)
+leg_mass = 0.01;       # Mass at the toe of each leg (kg)
+
+friction_coeff = 0.5;   # Ground friction coefficient
+
+# Hip motor model
+max_torque = 4;         # Stall torque of the motor (Nm)
+max_speed = 10000;      # Maximum motor speed (rpm)
+
+#g = 9.81;               # Gravitational acceleration (m/s^2)
+g = 0.0;
+
+q_rt = 0.17;            # Touchdown and rest radial lengths of legs (m)
+q_rl = 0.175;
+
+theta0_k = 300;         # Lateral torsional spring constants for each leg (Nm / rad)
+theta1_k = 400;
+theta2_k = 300;
+theta3_k = 300;
+theta4_k = 400;
+theta5_k = 300;
+
+theta0_r0 = 0.05;       # Lateral torsional rest lengths for each leg (rad)
+theta1_r0 = 0.05;
+theta2_r0 = 0.05;
+theta3_r0 = -0.05;
+theta4_r0 = -0.05;
+theta5_r0 = -0.05;
+
+theta0_d = 0.12;        # Lateral torsional damping constants for each leg (Nm / (rad/s))
+theta1_d = 0.16;
+theta2_d = 0.12;
+theta3_d = 0.12;
+theta4_d = 0.16;
+theta5_d = 0.12;
+
+rho0_k = 1200;          # Radial spring constants for each leg (N/m)
+rho1_k = 1600;
+rho2_k = 1200;
+rho3_k = 1200;
+rho4_k = 1600;
+rho5_k = 1200;
+
+rho0_r0 = 0.17;         # Radial spring rest lengths for each leg (m)
+rho1_r0 = 0.17;
+rho2_r0 = 0.17;
+rho3_r0 = 0.17;
+rho4_r0 = 0.17;
+rho5_r0 = 0.17;
+
+rho0_d = 12;            # Radial damping constants for each leg (N / m/s)
+rho1_d = 16;
+rho2_d = 12;
+rho3_d = 12;
+rho4_d = 16;
+rho5_d = 12;
+
+attach0_x = 0.1;        # Attachment points for all six legs 
+attach0_y = -0.2;       # expressed in the body frame(m)
+attach0_z = 0;
+attach1_x = 0.15;
+attach1_y = 0;
+attach1_z = 0;
+attach2_x = 0.1;
+attach2_y = 0.2;
+attach2_z = 0;
+attach3_x = -0.1;
+attach3_y = -0.2;
+attach3_z = 0;
+attach4_x = -0.15;
+attach4_y = 0;
+attach4_z = 0;
+attach5_x = -0.1;
+attach5_y = 0.2;
+attach5_z = 0;
+
+J_11 = 0.09917;
+J_22 = 0.02917;
+J_33 = 0.11700;
+
+####################################################################
+# Terrain to be used in the simulation
+####################################################################
+
+terrain = "flat";        # Flat terrain. No arguments are necessary
+
+#terrain = "sloped";     # Sloped terrain
+#terrain_arg1 = 0.0;     # Slope in the x direction
+#terrain_arg2 = 0.2;     # Slope in the y direction
+#terrain_arg3 = 0.0;     # Z offset for the slope
+
+#terrain = "sinusoid";   # Sinusoid terrain
+#terrain_arg1 = 0.2;     # amplitude of the sinusoid
+#terrain_arg2 = 0.1;     # x axis frequency of the sinusoid
+#terrain_arg3 = 0.1;     # y axis frequency of the sinusoid
+
+#terrain = "ditchedflat"; # Ditched flat terrain terrain
+#terrain_arg1 = 0.0;      # Placement of the begining of ditch in y-axis
+#terrain_arg2 = 0.5;      # Width of the ditch
+#terrain_arg3 = 0.2;      # Depth of the ditch
+
+grid_xsteps = 50;       # Number of divisions of the ground plane along the x axis
+grid_ysteps = 50;       # Number of divisions of the ground plane along the y axis
+
+####################################################################
+# Data recording and visualization options
+####################################################################
+
+recordPeriod  = 0.001;      # Period of data recording ( seconds )
+measurePeriod = 0.1;        # Period of time messages.
+dataBaseName  = "hexaped";  # Name of the file for data output.
+
+useGeomview   = 1;          # Flag to enable/disable Geomview visualization
+framerate     = 60;        # Number of times Geomview is updated per simulated second
+#movie_filename = "deneme";
+
+####################################################################
+# Integration engine related parameters
+####################################################################
+maxChartCount     =   1280000; # Maximum number of chart transitions for a run.
+
+stopPrecision     =   1e-9;   # Numerical precision for chart transition detection
+maxStopIterations =   128;    # Max. number of iterations to detect a transition
+
+tolerance       =   1e-5;       # Integration magnitude numerical tolerance
+maxTimeStep     =   1e-3;       # Maximum time step
+minTimeStep     =   1e-13;      # Minimum time step
+
+rkPower         =   0.33;       # Power for adaptive adjustment of the time step
+

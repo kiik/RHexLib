@@ -1,0 +1,193 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: companion.tex,v 1.2 2001/07/12 17:14:09 ulucs Exp $
+%
+% RHexLib documentation companion 
+%
+% Created       : Eric Klavins, 01/06/2001
+% Last Modified : Eric Klavins, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt, letterpaper]{article}
+
+% ------------------------------------------------------- %
+% Load needed packages ---------------------------------- %
+
+\usepackage{graphics, epsfig, subfigure}
+\usepackage{verbatim, moreverb}
+\usepackage{float}
+
+%\pagestyle{plain}
+
+% ------------------------------------------------------- %
+% Page setup  ------------------------------------------- %
+
+%\renewcommand{\baselinestretch}{0.9}
+
+\setlength{\paperwidth}{8.5in}
+\setlength{\paperheight}{11in}
+\setlength{\textwidth}{6.5in} 
+\setlength{\oddsidemargin}{-0.1in}
+\setlength{\evensidemargin}{-0.1in} 
+%\setlength{\columnsep}{0.375in}
+
+\setlength{\topmargin}{0.4in} 
+\setlength{\textheight}{9.0in}
+\setlength{\headheight}{0.0in} 
+\setlength{\headsep}{0.0in}
+%\setlength{\parindent}{1pc}
+
+%\pagestyle{empty}
+
+% ------------------------------------------------------- %
+% Read utility files ------------------------------------ %
+
+%\input{uluchdr.tex}
+\input{environments.tex}
+\input{names.tex}
+
+\begin{document}
+
+% ------------------------------------------------------- %
+% Begin: Title ------------------------------------------ %
+
+\title{\bf {\Huge \rhexlib Programmer's Companion}}
+\author{
+  \vspace{0.2in}\\
+  {\Large Ulu\d{c} Saranli, Eric Klavins \vspace{0.3in} } \\
+  Department of Electrical Engineering and Computer Science \\
+  The University of Michigan \\
+  Ann Arbor, MI 48109-2110, USA\\
+  {\tt \{ulucs, klavins\}@eecs.umich.edu}}
+\date{}
+\maketitle
+
+% End: Title -------------------------------------------- %
+% ------------------------------------------------------- %
+
+% ------------------------------------------------------- %
+% Begin: Abstract --------------------------------------- %
+
+\vspace{0.3in}
+\begin{abstract}
+\end{abstract}
+
+% End: Abstract ----------------------------------------- %
+% ------------------------------------------------------- %
+
+\thispagestyle{empty}
+
+% ------------------------------------------------------- %
+% Begin: Misc titles ------------------------------------ %
+
+%\vspace{0.3in}
+%\begin{center}
+%  {\Large CSE Technical report: CSE-TR-436-00}
+%\end{center}
+
+% End: Misc titles -------------------------------------- %
+% ------------------------------------------------------- %
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Overview}
+
+Describe the document and how to use it with the user's manual.
+
+\section{Modules and the Module Manager}
+
+{\it Modules} are the fundamental components of any \rhexlib program. They essentially define
+processes or threads that are managed by an object called the {\it Module Manager}. For example,
+there are modules for keeping track of the motor positions, for PD control of the motors, for
+filtering sensor readings, for high level continuous controllers and for discrete event supervisory
+controllers. 
+
+The various types of modules, some of which are provided by \rhexlib and some of which the
+programmer must define, are all inheirited from the base class \Module. This base class has five
+virtual methods that must be defined by any child class: these are \initFN, \activateFN,
+\deactivateFN, \uninitFN, and \updateFN. The Module Mangager calls these methodss using the
+following scheme. At first, a module's status is {\it uninitialized}. When the module is added to
+the Module Mangager, using the function {\tt MMAddModule}, the \initFN method is called and the
+module is added to the Module Manager's list and its status set to {\it inactive}. The \initFN
+method is thus the place to initialize any local data needed by the modele. Then, at some point, the
+module will be activated, using the either the {\tt ActivateModule} function or the {\tt GrabModule}
+function, at which point the \activateFN method is called and the module's status becomes {\it
+active}. Once active, the module's \updateFN method is repeatedly called by the Module Manager, at a
+freqency specified by {\it period} opf the module. When the module is inactivated, by {\tt
+MMDeactivateModule} or {\tt MMReleaseModule}, the \deactivateFN method is called and updates no
+cease. The module may also be removed, using {\tt MMRemoveModule}, calling the \uninitFN method and
+removing it from the Module Manager's list. This ``life cycle'' of a module is shown in Figure
+\ref{fig-life-cycle}. An example of how to define a module is shown in the next subsection.
+
+\begin{figure}[t]
+\begin{center}
+\epsfig{file=pix/lifecycle.eps,width=4.5in}
+\caption{The life cycle of a Module. 
+\label{fig-life-cycle}}
+\end{center}
+\end{figure}
+
+Also: other things the module manager does for you (clocks, etc)
+
+\subsection{Defining New Modules}
+
+An example of how to define a module. (the safty module perhaps?)
+
+\section{RHex Specific Modules}
+
+This has a general description of the modules and the heirarchy picture.
+
+\subsection{Hardware Issues}
+
+Maybe here is where to describe the preferred way of handling encoders and motor drives, etc.
+
+\section{State Machines}
+
+What is a state machine and what is its lifetime?
+
+\subsection{Defining New State Machines}
+
+An example.
+
+\end{document}
+

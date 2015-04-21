@@ -1,0 +1,10 @@
+Transition uncalibrated calCommand calibrating
+Transition calibrating calFail uncalibrated
+Transition calibrating calSuccess idle
+Transition idle standCommand runningStand
+Transition runningStand standDone standing
+Transition standing sitCommand runningSit
+Transition runningSit sitDone idle
+Transition standing pushupCommand doingPushups
+Transition doingPushups stopCommand runningStand
+Initial uncalibrated

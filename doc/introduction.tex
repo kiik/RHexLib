@@ -1,0 +1,146 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: introduction.tex,v 1.3 2001/07/18 20:04:50 ulucs Exp $
+%
+% Created       : Uluc Saranli, 01/06/2001
+% Last Modified : Uluc Saranli, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Introduction}
+
+\section{Overview}
+
+RHexLib is a collection of software components and modules to run on the
+RHex robot. It incorporates low level hardware access routines, motion
+control functionality and high level controllers. It is designed to be
+modular and functional on different versions of underlying hardware with
+minimal code modifications.
+
+Currently, RHexLib has four major packages:
+
+\begin{enumerate}
+\item{\bf RHexLib\_core}\par 
+This package is a collection of core components and the most stable standard
+set of controllers. It also incorporates all the low level hardware
+libraries for different versions of the robot. The following list summarizes
+the contents of this package.
+
+\begin{itemize}
+
+\item{The Module Manager : A static scheduler for
+periodic tasks}
+
+\item{Symbol Table facilities: Management of configuration files and access
+to configuration symbols.}
+
+\item{Data logging tools : Modules to manage runtime logging and
+storage of data.}
+
+\item{State Machine framework : Formal mechanisms for defining and executing
+state machines.}
+
+\item{Basic motion control tools : Motor position sensing, local PD and
+torque control, generic motion profiling tools.}
+
+\item{Basic RHex calibration : Modules to perform automatic actuator and
+sensor calibration of the robot.}
+
+\item{Basic RHex controllers : Standing, sitting, alternating tripod walking
+and alternating triwheel gait controllers.}
+
+\item{Framework for hardware access : An abstract  class interface to low level hardware.}
+
+\item{Hardware libraries : Support for Michigan RHex, McGill RHex, interface
+to SimSect++ simulation environment and a set of virtual free running
+motors.}
+
+\item{Various examples : Lots of examples, module and template controllers.}
+\end{itemize}
+
+The components in this package are unlikely to undergo any significant
+changes. New releases of the library will possibly add new components or
+improve the existing ones in a backwards compatible way.
+
+\item{\bf SimSect++}\par
+
+SimSect++ is a simulation package for RHex, developed by Uluc Saranli. This
+package is a version of SimSect++, which works with RHexLib in a transparent
+way to implement the ability of testing RHexLib code outside the robot
+itself. Being a somewhat simplified model of the robot, the behavioral
+results of thesimulation are not as accurate, but as a development
+framework, it is invaluable.
+
+\item{\bf RHexLib\_Michigan}\par
+This package contains all the modules and examples as well as the common
+demo executable for the Michigan development team. The components in this
+library are not essential to RHexLib's existence.
+
+The idea behind this institution specific package is to decouple the
+experimental development efforts between different institutions and minimize
+the impact of such development on others. As such, this local package is
+less constraining than the core library, but still has some restrictions on
+minimal functionality before admitting a component.
+
+\item{\bf RHexLib\_McGill}\par
+This package contains all the modules and examples as well as the common
+demo executable for the McGill development team. Its structure is the same
+as the Michigan local package.
+
+The latest versions of each of these packages as well as this documentation
+are available through {\tt rhex.sourceforge.net}.
+\end{enumerate}
+
+\section{About This Manual}
+
+We start in Chapter \ref{sec:quickstart} with tutorials on many commonly
+encountered tasks, with specific worked out examples. Chapter
+\ref{sec:fundamentals} then details the fundamentals of the library,
+including all the library specific data types. This is followed by a
+detailed description of the module manager and related tools in Chapter
+\ref{sec:modulemanager}, which constitutes the foundations of RHexLib.
+
+Chapter \ref{sec:rhexlib_module_summary} then gives a detailed summary of
+all the modules in the core library, followed by Chapter
+\ref{sec:utilities}, a reference for the various utilities in the
+library. Detailed descriptions of the standard hardware components supported
+by the abstract Hardware base class are presented in Chapter
+\ref{sec:hardware_interface}. Various implementations of this hardware
+interface in different hardware libraries are then described in Chapter
+\ref{sec:hardware_libraries}. 
+

@@ -1,0 +1,171 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: names.tex,v 1.4 2001/07/18 20:04:50 ulucs Exp $
+%
+%  This file defines LaTeX macros for all the class names, datatypes etc.
+% in RHexLib
+%
+% Created       : Uluc Saranli, 01/06/2001
+% Last Modified : Uluc Saranli, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% ------------------------------------------------------- %
+% Library Name ------------------------------------------ %
+\def \rhexlib {{RHexLib}}
+
+% ------------------------------------------------------- %
+% RHexLib header files ---------------------------------- %
+\def \typeshh {``types.hh''}
+\def \mmhh {``ModuleManager.hh''}
+\def \Hardwarehh {``Hardware.hh''}
+
+% ------------------------------------------------------- %
+% Module Manager Class names -----------------------------%
+
+\def \Module        {{\tt Module}}
+\def \ModuleManager {{\tt ModuleManager}}
+
+% ------------------------------------------------------- %
+% Module Manager Member Functions ------------------------%
+\def \initFN        {{\tt init()}}
+\def \activateFN    {{\tt activate()}}
+\def \deactivateFN  {{\tt deactivate()}}
+\def \uninitFN      {{\tt uninit()}}
+\def \updateFN      {{\tt update()}}
+
+% ------------------------------------------------------- %
+% Module Manager Definitions -----------------------------%
+
+\def \ModuleInactive {{\tt MODULE\_INACTIVE}}
+\def \ModuleActive   {{\tt MODULE\_ACTIVE}}
+
+% ------------------------------------------------------- %
+% Low Level Hardware inetrface Class names -------------- %
+
+\def \Hardware      {{\tt Hardware}}
+\def \EncoderHW     {{\tt EncoderHW}}
+\def \AnalogHW      {{\tt AnalogHW}}
+\def \DigitalHW     {{\tt DigitalHW}}
+\def \TimerHW       {{\tt TimerHW}}
+\def \AccelHW       {{\tt AccelHW}}
+\def \GyroHW        {{\tt GyroHW}}
+\def \PowerHW       {{\tt PowerHW}}
+\def \SwitchHW      {{\tt SwitchHW}}
+\def \DialHW        {{\tt DialHW}}
+\def \DCMotorHW     {{\tt DCMotorHW}}
+
+% ------------------------------------------------------- %
+% Existing Module names --------------------------------- %
+
+\def \EncoderReader   {{\tt EncoderReader}}
+\def \AnalogOutput    {{\tt AnalogOutput}}
+\def \SpeedFilter     {{\tt SpeedFilter}}
+\def \StallSensor     {{\tt StallSensor}}
+\def \SlopeEstimator  {{\tt SlopeEstimator}}
+\def \PulseWidth      {{\tt PulseWidth}}
+\def \MotorControl    {{\tt MotorControl}}
+\def \PositionControl {{\tt PositionControl}}
+\def \StateMachine    {{\tt StateMachine}}
+\def \DataLogger      {{\tt DataLogger}}
+\def \VirtualMotor    {{\tt VirtualMotor}}
+\def \VirtualInput    {{\tt VirtualInput}}
+\def \DataLogger      {{\tt DataLogger}}
+\def \RHexLogger      {{\tt RHexLogger}}
+
+% ------------------------------------------------------- %
+% Controller Module names ------------------------------- %
+
+\def \CalibMachine    {{\tt CalibMachine}}
+\def \WalkMachine     {{\tt WalkMachine}}
+\def \RHexWalker      {{\tt RHexWalker}}
+\def \SitMachine      {{\tt SitMachine}}
+\def \StandMachine    {{\tt StandMachine}}
+
+% ------------------------------------------------------- %
+% Utility class names ----------------------------------- %
+
+\def \SymbolTable     {{\tt SymbolTable}}
+\def \Tokenizer       {{\tt Tokenizer}}
+\def \Profiler        {{\tt Profiler}}
+
+% ------------------------------------------------------- %
+% RHexLib data types ------------------------------------ %
+
+\def \bool {{\tt bool}}
+
+% Shortcut types %
+\def \intb   {{\tt int8}}
+\def \uintb  {{\tt uint8}}
+\def \intw   {{\tt int16}}
+\def \uintw  {{\tt uint16}}
+\def \intdw  {{\tt int32}}
+\def \uintdw {{\tt uint32}}
+\def \intqw  {{\tt int64}}
+\def \uintqw {{\tt uint64}}
+
+\def \uint   {{\tt uint}}
+\def \vast   {{\tt vast}}
+\def \uvast  {{\tt uvast}}
+\def \VastToLong {{\tt VAST\_TO\_LONG}}
+\def \VastToDouble {{\tt VAST\_TO\_DOUBLE}}
+
+\def \CLOCK  {{\tt CLOCK}}
+
+\def \floats {{\tt floats}}
+\def \strings {{\tt strings}}
+\def \float {{\tt float}}
+
+\def \ClocksPerSec {{\tt MM\_CLOCKS\_PER\_SEC}}
+\def \ClockToLong {{\tt CLOCK\_TO\_LONG}}
+\def \ClockToDouble {{\tt CLOCK\_TO\_DOUBLE}}
+\def \ClockToSec {{\tt CLOCK\_TO\_SEC}}
+\def \ClockToMin {{\tt CLOCK\_TO\_MIN}}
+\def \ClockToHour {{\tt CLOCK\_TO\_HOUR}}
+\def \SecToClock {{\tt SEC\_TO\_CLOCK}}
+\def \MinToClock {{\tt MIN\_TO\_CLOCK}}
+\def \HourToClock {{\tt HOUR\_TO\_CLOCK}}
+\def \MPI {{\tt M\_PI}}
+
+% Module manager data types */
+\def \mmstep {{\tt MM\_STEP}}
+\def \hwparam {{\tt HWParam\_t}}
+\def \hwcalib {{\tt HWCalib\_t}}
+\def \motortarget {{\tt MotorTarget\_t}}
+\def \motorgains {{\tt MotorGains\_t}}

@@ -1,0 +1,164 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: lanixhelp.tex,v 1.2 2001/07/12 17:14:10 ulucs Exp $
+%
+% *nix tutorial.
+%
+% Created       : Laura McWilliams, 05/12/2001
+% Last Modified : Laura McWilliams, 05/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage{hhline}
+\usepackage{alltt}
+
+\setlength{\paperwidth}{8.5in}
+\setlength{\paperheight}{11in}
+
+
+\begin{document}
+
+
+\title{\bf {\Large Laura's Abbreviated Guide to *NIX commands}\\ 
+           {\large (for new Kodlab members)}}
+\author{\large \it Laura McWilliams (lmcwil@umich.edu)}
+\maketitle 
+
+\section*{Introduction}
+Some people who come to KodLab have never used Linux before,
+so I figured it might be helpful to have a quick brief reference
+available to help you figure out how to do basic things.
+
+\section{Use tcsh}
+tcsh is cool, in my opinion. It's nice because you can do spiffy
+things. For instance,
+hitting TAB tries to figure out what you were starting to type (so you 
+don't have to always type out the whole thing.
+You can use the arrow keys to scroll through all the commands you've
+typed in at this shell.
+So that's why they pretty much set up everybody initially with ctsh as 
+default shell to use. If not, you can type tcsh and you'll be using
+tcsh. I wish I knew how all this shell stuff worked; then I could
+explain it all to you.
+
+\section{Basic Commands}
+
+\subsection{Moving Around}
+To figure out {\it where} you are, type {\bf pwd} (for Print Working
+Directory).\\
+To move to a different directory, type {\bf cd pathname} where
+pathname is the path to the new directory, relative to where you are
+now, or an absolute pathname. For instance, if the directory you want
+to go to is\\
+ {\bf /yildiz/u/uniqname/RHex/blah/ }\\
+ but you're currently at {\bf /yildiz/u/uniqname/somewhere/ },\\
+ you could type {\bf cd /yildiz/u/uniqname/RHex/blah }\\
+ or simply use the relative path
+and type {\bf cd ../RHex/blah }.\\
+In Unix, a single dot {\bf .} represents the directory you are in,
+while two dots {\bf ..} means the directory one level above. 
+
+\subsection{Messing with Files}
+To copy stuff, use {\bf cp filename newfilename }. NOTE: with this, as 
+with other commands, you can specify a path if you're not right in the 
+directory with the files you want to manipulate. For instance, if
+you want to copy file goo.txt to the directory two levels above, you
+can type {\bf cp goo.txt ../../ } and it will automatically give it
+the same name, goo.txt in the new location.\\
+To move a file, use {\bf mv oldfilename newfilename }, which is the
+same as copy, only it gets rid of the original version.\\
+To remove a file, type {\bf rm filename }. Don't do this unless you
+mean it.\\
+
+\subsection{Running Programs}
+To run a program, simply type the name of the program at the
+prompt. If you are running an executable you created yourself, you
+should type {\bf ./myexecutable } to run the program.\\
+If you want to run a process in the background (that is, the program
+will run, but your shell will still be able to do other stuff at the
+same time), follow the command with an ampersand {\bf \&}. For
+instance, you could type {\bf xemacs foo.cc \& }. That way, you can
+still use the same shell to run other processes while you have xemacs
+open to edit foo.cc.
+
+
+\section{Wildcards and Recursion}
+
+\subsection{Wildcards}
+In Unix, you can use star {\bf *} as a wildcard. So you could say {\bf 
+cp *.cc ../backup/ } to copy all your .cc files to another
+directory. Or, you could say {\bf rm *.o } to get rid of all the
+object files in the current directory. It's a neat feature.
+
+\subsection{Recursion}
+If you want to do a regular UNIX file command on a directory, you must 
+call it recursively. This can be done with basic commands by typing
+{\bf -R} or {\bf -r} after the command. For example, saying {\bf cp -r 
+mydirectory ../backup} will copy the {\it entire directory}, not only
+its contents, into the directory {\bf backup}. So the copy will be
+{\bf backup/mydirectory}.
+
+
+\section{Secure Shell}
+For security purposes, the KodLab computers are set up so you can't
+use telnet or ftp to access them.
+To use secure shell, type {\bf ssh hostname }. It will ask you for
+your password. You can use this to get onto local computers, like {\it 
+poyraz} or {\it serefe} (my personal favorite) or external hosts, like 
+{\it login.itd.umich.edu}.
+
+\subsection{Secure Copy}
+The syntax of Secure Copy is obscure and often screwed up by people
+like me. If you are simply sitting on your own computer, you can type:
+{\bf scp uniqname@originhost:filename
+uniqname@destinationhost:filename }. It will ask you for passwords on
+both hosts.\\
+It seems to me that often you will already be ssh'd to the computer
+where you are copying files to and/or from, in which case, you don't
+have to type in all that info. For example, let's say you are ssh'd to 
+your afs space which is on login.itd.umich.edu, or afs.engin.umich.edu 
+or whatever it is you engineering students save all your stuff
+on. Suppose you want to copy myfile.txt over from your afs into your
+home directory. You could
+just type {\bf scp myfile.txt uniqname@thiscomputer: } and it will put 
+myfile.txt into your home directory on the computer named {\bf
+thiscomputer}. It will ask you for your password.
+
+\end{document}

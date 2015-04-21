@@ -1,0 +1,215 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: RHexlogtable.tex,v 1.4 2001/07/20 15:14:06 ulucs Exp $
+%
+% tables containing information on available variables for logging
+%
+% Created       : Laura McWilliams, 01/06/2001
+% Last Modified : Laura McWilliams, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{center}
+\begin{longtable}{|l|l|}
+  \caption{\label{tab:hwlogvars}Logger Variable Names}
+      %\hline
+%      {\bf Name in .rc file} & {\bf Value to be logged}\\
+      \endfirsthead
+      \caption[]{\emph{continued}}\\
+      \hline \endhead   
+      \hline
+      \multicolumn{2}{r}{\emph{continued on next page}}
+      \endfoot
+      \hline \endlastfoot
+      \hline
+      {\bf Name in .rc file} & {\bf Value to be logged}\\
+      \hline
+      \multicolumn{2}{|c|}{\emph{General purpose variables}}\\
+      \hline
+      time & MMReadTime()\\
+      relative\_time & MMReadTime() - timeOfLastReset\\
+      \hline 
+      \multicolumn{2}{|c|}{\emph{Module-related variables}}\\
+      \hline 
+      mod\_enc\_speed0 & encreader[0]-$>$getSpeed()\\
+      mod\_enc\_speed1 & encreader[1]-$>$getSpeed()\\
+      mod\_enc\_speed2 & encreader[2]-$>$getSpeed()\\
+      mod\_enc\_speed3 & encreader[3]-$>$getSpeed()\\
+      mod\_enc\_speed4 & encreader[4]-$>$getSpeed()\\
+      mod\_enc\_speed5 & encreader[5]-$>$getSpeed()\\
+      mod\_enc\_pos0 & encreader[0]-$>$getPosition()\\
+      mod\_enc\_pos1 & encreader[1]-$>$getPosition()\\
+      mod\_enc\_pos2 & encreader[2]-$>$getPosition()\\
+      mod\_enc\_pos3 & encreader[3]-$>$getPosition()\\
+      mod\_enc\_pos4 & encreader[4]-$>$getPosition()\\
+      mod\_enc\_pos5 & encreader[5]-$>$getPosition()\\
+      mod\_analogout0 & analogout[0]-$>$getValue()\\
+      mod\_analogout1 & analogout[1]-$>$getValue()\\
+      mod\_analogout2 & analogout[2]-$>$getValue()\\
+      mod\_analogout3 & analogout[3]-$>$getValue()\\
+      mod\_analogout4 & analogout[4]-$>$getValue()\\
+      mod\_analogout5 & analogout[5]-$>$getValue()\\
+      mod\_poscontrol\_pos0 & positioncontrol[0]-$>$getTarget().pos\\
+      mod\_poscontrol\_pos1 & positioncontrol[1]-$>$getTarget().pos\\
+      mod\_poscontrol\_pos2 & positioncontrol[2]-$>$getTarget().pos\\
+      mod\_poscontrol\_pos3 & positioncontrol[3]-$>$getTarget().pos\\
+      mod\_poscontrol\_pos4 & positioncontrol[4]-$>$getTarget().pos\\
+      mod\_poscontrol\_pos5 & positioncontrol[5]-$>$getTarget().pos\\
+      mod\_poscontrol\_vel0 & positioncontrol[0]-$>$getTarget().vel\\
+      mod\_poscontrol\_vel1 & positioncontrol[1]-$>$getTarget().vel\\
+      mod\_poscontrol\_vel2 & positioncontrol[2]-$>$getTarget().vel\\
+      mod\_poscontrol\_vel3 & positioncontrol[3]-$>$getTarget().vel\\
+      mod\_poscontrol\_vel4 & positioncontrol[4]-$>$getTarget().vel\\
+      mod\_poscontrol\_vel5 & positioncontrol[5]-$>$getTarget().vel\\
+      mod\_spdfil0 & speedfilter[0]-$>$getSpeed()\\
+      mod\_spdfil1 & speedfilter[1]-$>$getSpeed()\\
+      mod\_spdfil2 & speedfilter[2]-$>$getSpeed()\\
+      mod\_spdfil3 & speedfilter[3]-$>$getSpeed()\\
+      mod\_spdfil4 & speedfilter[4]-$>$getSpeed()\\
+      mod\_spdfil5 & speedfilter[5]-$>$getSpeed()\\
+      \hline
+      \multicolumn{2}{|c|}{\emph{Hardware-related Variables}}\\
+      \hline
+      hw\_accel\_x & hw-$>$accels-$>$read(AccelHW::AXIS\_X)\\
+      hw\_accel\_y & hw-$>$accels-$>$read(AccelHW::AXIS\_Y)\\
+      hw\_accel\_z & hw-$>$accels-$>$read(AccelHW::AXIS\_Z)\\
+      hw\_gyro\_rate\_x & hw-$>$gyros-$>$read(AccelHW::AXIS\_X)\\
+      hw\_gyro\_rate\_y & hw-$>$gyros-$>$read(AccelHW::AXIS\_Y)\\
+      hw\_gyro\_rate\_z & hw-$>$gyros-$>$read(AccelHW::AXIS\_Z)\\
+      hw\_encoders0 & hw-$>$encoders-$>$read(0)\\
+      hw\_encoders1 & hw-$>$encoders-$>$read(1)\\
+      hw\_encoders2 & hw-$>$encoders-$>$read(2)\\
+      hw\_encoders3 & hw-$>$encoders-$>$read(3)\\
+      hw\_encoders4 & hw-$>$encoders-$>$read(4)\\
+      hw\_encoders5 & hw-$>$encoders-$>$read(5)\\
+      hw\_analogin0 & hw-$>$analogIO-$>$read(0)\\
+      hw\_analogin1 & hw-$>$analogIO-$>$read(1)\\
+      hw\_analogin2 & hw-$>$analogIO-$>$read(2)\\
+      hw\_analogin3 & hw-$>$analogIO-$>$read(3)\\
+      hw\_analogin4 & hw-$>$analogIO-$>$read(4)\\
+      hw\_analogin5 & hw-$>$analogIO-$>$read(5)\\
+      hw\_analogin6 & hw-$>$analogIO-$>$read(6)\\
+      hw\_analogin7 & hw-$>$analogIO-$>$read(7)\\
+      hw\_analogin8 & hw-$>$analogIO-$>$read(8)\\
+      hw\_analogin9 & hw-$>$analogIO-$>$read(9)\\
+      hw\_analogin10 & hw-$>$analogIO-$>$read(10)\\
+      hw\_analogin11 & hw-$>$analogIO-$>$read(11)\\
+      hw\_analogin12 & hw-$>$analogIO-$>$read(12)\\
+      hw\_analogin13 & hw-$>$analogIO-$>$read(13)\\
+      hw\_analogin14 & hw-$>$analogIO-$>$read(14)\\
+      hw\_analogin15 & hw-$>$analogIO-$>$read(15)\\
+      hw\_digitalio0 & hw-$>$digitalIO-$>$getByte(0)\\
+      hw\_digitalio1 & hw-$>$digitalIO-$>$getByte(1)\\
+      hw\_digitalio2 & hw-$>$digitalIO-$>$getByte(2)\\
+      hw\_digitalio3 & hw-$>$digitalIO-$>$getByte(3)\\
+      hw\_digitalio4 & hw-$>$digitalIO-$>$getByte(4)\\
+      hw\_digitalio5 & hw-$>$digitalIO-$>$getByte(5)\\
+      hw\_digitalio6 & hw-$>$digitalIO-$>$getByte(6)\\
+      hw\_timers0 & hw-$>$timers-$>$read(0)\\
+      hw\_timers1 & hw-$>$timers-$>$read(1)\\
+      hw\_timers2 & hw-$>$timers-$>$read(2)\\
+      hw\_timers3 & hw-$>$timers-$>$read(3)\\
+      hw\_timers4 & hw-$>$timers-$>$read(4)\\
+      hw\_timers5 & hw-$>$timers-$>$read(5)\\
+      hw\_timers6 & hw-$>$timers-$>$read(6)\\
+      hw\_timers7 & hw-$>$timers-$>$read(7)\\
+      hw\_timers8 & hw-$>$timers-$>$read(8)\\
+      hw\_switches0 & hw-$>$switches-$>$read(0)\\
+      hw\_switches1 & hw-$>$switches-$>$read(1)\\
+      hw\_switches2 & hw-$>$switches-$>$read(2)\\
+      hw\_switches3 & hw-$>$switches-$>$read(3)\\
+      hw\_switches4 & hw-$>$switches-$>$read(4)\\
+      hw\_switches5 & hw-$>$switches-$>$read(5)\\
+      hw\_switches6 & hw-$>$switches-$>$read(6)\\
+      hw\_switches7 & hw-$>$switches-$>$read(7)\\
+      hw\_dials0 & hw-$>$dials-$>$read(0)\\
+      hw\_dials1 & hw-$>$dials-$>$read(1)\\
+      hw\_dials2 & hw-$>$dials-$>$read(2)\\
+      hw\_dials3 & hw-$>$dials-$>$read(3)\\
+      hw\_dials4 & hw-$>$dials-$>$read(4)\\
+      hw\_dials5 & hw-$>$dials-$>$read(5)\\
+      hw\_dcmotor\_volt0 & hw-$>$dcmotors-$>$getVoltage(0)\\
+      hw\_dcmotor\_volt1 & hw-$>$dcmotors-$>$getVoltage(1)\\
+      hw\_dcmotor\_volt2 & hw-$>$dcmotors-$>$getVoltage(2)\\
+      hw\_dcmotor\_volt3 & hw-$>$dcmotors-$>$getVoltage(3)\\
+      hw\_dcmotor\_volt4 & hw-$>$dcmotors-$>$getVoltage(4)\\
+      hw\_dcmotor\_volt5 & hw-$>$dcmotors-$>$getVoltage(5)\\
+      hw\_dcmotor\_curr0 & hw-$>$dcmotors-$>$getCurrent(0)\\
+      hw\_dcmotor\_curr1 & hw-$>$dcmotors-$>$getCurrent(1)\\
+      hw\_dcmotor\_curr2 & hw-$>$dcmotors-$>$getCurrent(2)\\
+      hw\_dcmotor\_curr3 & hw-$>$dcmotors-$>$getCurrent(3)\\
+      hw\_dcmotor\_curr4 & hw-$>$dcmotors-$>$getCurrent(4)\\
+      hw\_dcmotor\_curr5 & hw-$>$dcmotors-$>$getCurrent(5)\\
+      hw\_dcmotor\_backemf0 & hw-$>$dcmotors-$>$getBackEMF(0)\\
+      hw\_dcmotor\_backemf1 & hw-$>$dcmotors-$>$getBackEMF(1)\\
+      hw\_dcmotor\_backemf2 & hw-$>$dcmotors-$>$getBackEMF(2)\\
+      hw\_dcmotor\_backemf3 & hw-$>$dcmotors-$>$getBackEMF(3)\\
+      hw\_dcmotor\_backemf4 & hw-$>$dcmotors-$>$getBackEMF(4)\\
+      hw\_dcmotor\_backemf5 & hw-$>$dcmotors-$>$getBackEMF(5)\\
+      hw\_dcmotor\_temp0 & hw-$>$dcmotors-$>$getTemperature(0)\\
+      hw\_dcmotor\_temp1 & hw-$>$dcmotors-$>$getTemperature(1)\\
+      hw\_dcmotor\_temp2 & hw-$>$dcmotors-$>$getTemperature(2)\\
+      hw\_dcmotor\_temp3 & hw-$>$dcmotors-$>$getTemperature(3)\\
+      hw\_dcmotor\_temp4 & hw-$>$dcmotors-$>$getTemperature(4)\\
+      hw\_dcmotor\_temp5 & hw-$>$dcmotors-$>$getTemperature(5)\\
+      hw\_power\_voltage & hw-$>$power-$>$voltage()\\
+      hw\_power\_current & hw-$>$power-$>$current()\\
+      \hline
+      \multicolumn{2}{|c|}{\emph{User-defined Variables}}\\
+      \hline
+      user\_defined0 & rhexLoggerGlobalVars[0]\\
+      user\_defined1 & rhexLoggerGlobalVars[1]\\ 
+      user\_defined2 & rhexLoggerGlobalVars[2]\\
+      user\_defined3 & rhexLoggerGlobalVars[3]\\
+      user\_defined4 & rhexLoggerGlobalVars[4]\\ 
+      user\_defined5 & rhexLoggerGlobalVars[5]\\
+      user\_defined6 & rhexLoggerGlobalVars[6]\\
+      user\_defined7 & rhexLoggerGlobalVars[7]\\ 
+      user\_defined8 & rhexLoggerGlobalVars[8]\\
+      user\_defined9 & rhexLoggerGlobalVars[9]\\
+      user\_defined10 & rhexLoggerGlobalVars[10]\\ 
+      user\_defined11 & rhexLoggerGlobalVars[11]\\
+      user\_defined12 & rhexLoggerGlobalVars[12]\\
+      user\_defined13 & rhexLoggerGlobalVars[13]\\ 
+      user\_defined14 & rhexLoggerGlobalVars[14]\\
+      user\_defined15 & rhexLoggerGlobalVars[15]\\
+      \hline
+\end{longtable}
+\end{center}
+
+

@@ -1,0 +1,240 @@
+%
+% This file is part of RHexLib, 
+%
+% Copyright (c) 2001 The University of Michigan, its Regents,
+% Fellows, Employees and Agents. All rights reserved, and distributed as
+% free software under the following license.
+% 
+%  Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions are
+% met:
+% 
+% 1) Redistributions of source code must retain the above copyright
+% notice, this list of conditions, the following disclaimer and the
+% file called "CREDITS" which accompanies this distribution.
+% 
+% 2) Redistributions in binary form must reproduce the above copyright
+% notice, this list of conditions, the following disclaimer and the file
+% called "CREDITS" which accompanies this distribution in the
+% documentation and/or other materials provided with the distribution.
+% 
+% 3) Neither the name of the University of Michigan, Ann Arbor or the
+% names of its contributors may be used to endorse or promote products
+% derived from this software without specific prior written permission.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+% A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR
+% CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+% EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+% PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+% PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+% LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+% SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: hardwarelibs.tex,v 1.2 2001/07/19 23:37:43 ulucs Exp $
+%
+% Created       : Uluc Saranli, 01/06/2001
+% Last Modified : Uluc Saranli, 06/27/2001
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Hardware Libraries}
+\label{sec:hardware_libraries}
+
+\section{RHex Michigan Hardware}
+
+\subsection{The {\tt dm6814} Class}
+
+\subsection{The {\tt mpc550} Class}
+
+\subsection{{\tt MEncoder} Component}
+
+\subsection{{\tt MAnalog} Component}
+
+\subsection{{\tt MDigital} Component}
+
+\subsection{{\tt MTimer} Component}
+
+\subsection{{\tt MAccel} Component}
+
+\subsection{{\tt MPower} Component}
+
+\subsection{{\tt MSwitch} Component}
+
+\subsection{{\tt MDial} Component}
+
+\subsection{{\tt MMotor} Component}
+
+{\tt MMotor} class is the DCMotorHW component of the Michigan hardware
+implementation. It has the following features:
+
+\begin{itemize}
+\item{Estimation of motor current, motor terminal voltage and motor back EMF
+using a crude model of the APEX drive voltage drop.}
+
+\item{APEX drive voltage drop compensation in setting the terminal voltage
+command to the motor.}
+
+\end{itemize}
+
+The estimated motor values are computed only once per cycle. This is
+accomplished by checking the last read values of the voltage command setting
+and the encoder speed reading and performing recomputations only when these
+values change.\\
+
+\noindent{\bf Motor state estimation algorithms}\\
+
+The motor back EMF is computed using the latest motor speed measurement.
+
+\begin{equation*}
+V_E = \frac{\omega}{K_\omega k_g}
+\end{equation*}
+
+\noindent where $\omega$ is the leg rotation speed ($rad/s$), $K_\omega$ is
+the motor speed constant ($(rad/s)/V$) and $k_g$ is the gear ratio (output
+rev/shaft rev).
+
+The outputs of the APEX motor drives are pulse-width modulated (PWM)
+signals, whose duty factor is an affine function of the command signal to
+the motor drives. Note that this command signal is different than the
+voltage across motor terminals.
+
+\begin{equation}
+\phi = s_d (V_c - V_c^0)
+\label{eq:affine_apex_command}
+\end{equation}
+
+\noindent where $\phi$ is the duty factor in the range $[-1, 1]$,
+$s_d$ is the drive command scaling factor, also incorporating the polarity
+of the motor drive ($1/Volts$), $V_c$ is the latest command output to the APEX
+drive and $V_c^0$ is the neutral command, resulting in $\phi = 0$
+(empirically determined by the calibration procedures).
+
+The final step in the estimation is to find the operating point for the
+motor terminal voltage and the armature current. Two equations govern the
+operation of the motor.
+
+\begin{eqnarray*}
+V_o & = & r_a I + V_E \\
+V_o & = & \phi ( V_s - r_d I )
+\end{eqnarray*}
+
+\noindent where $V_o$ and $I$ are the armature voltage and current, $V_s$ is
+the supply voltage, $r_a$ is the armature resistance and $r_d$. Under this
+simple model, the operating point for the current can be easily found.
+
+\begin{equation*}
+I = \frac{\phi V_s - V_E}{r_a + \phi r_d}
+\end{equation*}
+
+However, this model has serious problems. Note that for $\phi < 0$, the
+drive drop model starts acting like an active element. As a consequence,
+when $\phi = -r_a/r_d$, the current becomes infinite. We solve this problem
+by making sure that the drive drop (which, in fact, is a consequence of the
+internal resistance of the switching elements) remains a passive element by
+using the following drive drop model.
+
+\begin{equation*}
+V_o  =  \phi V_s - |\phi| r_d I
+\label{eq:drive_model}
+\end{equation*}
+
+Hence, the final motor state estimation equations take the following form.
+
+\begin{eqnarray*}
+V_E & = & \frac{\omega}{K_\omega k_g} \\
+\phi & = & s_d (V_c - V_c^0) \\
+I & = & \frac{\phi V_s - V_E}{r_a + |\phi| r_d} \\
+V_o & = & r_a I + V_E
+\end{eqnarray*}
+
+These equations are implemented in the {\tt MMotor::computeStates()}
+method. These computations can be disabled by setting the configuration
+symbol {\tt motor\_estimation\_enable} to 0. 
+\symbolindex{\tt motor\_estimation\_enable}.\\
+
+\noindent{\bf APEX voltage drop compensation in setting the voltage command}\\
+
+The DCMotorHW interface requires that the {\tt setCommand()} method's
+argument specifies the desired {\tt terminal} voltage. The simplest model of
+the motor drives would assume that there is no supply voltage drop as a
+consequence, resulting in the following equation to compute the drive
+command.
+
+\begin{equation*}
+V_c = \frac{1}{s_d} \frac{V_o}{V_s} + V_c^0
+\end{equation*}
+
+\noindent where $V_o$ is the desired terminal voltage and $s_d$ is the drive
+scaling coefficient as defined above. However, the voltage drop at the motor
+drives is usually very large and cannot be ignored. If it is ignored, the
+actual motor terminal voltage would end up being lower in magnitude than the
+desired value, resulting in degradation of the approximate torque
+control. As a consequence, the Michigan hardware implementation features 
+APEX drive drop compensation when setting the terminal voltage through the
+{\tt setCommand()} interface.
+
+Let's assume that we are given a desired terminal voltage $V_o$. We will
+need to solve the following equation for $\phi$ in order to determine the
+command that we need to apply to the APEX drives (which is an affine
+function of $\phi$ as in (\ref{eq:affine_apex_command})) following equation.
+
+\begin{equation*}
+V_o = \phi V_s - |\phi| r_d (V_o - V_E)/r_a
+\end{equation*}
+
+At this point, we also make the assumption that $V_s - r_d(V_o - V_E)/r_a >
+0$. This is a reasonable assumption because it is physically impossible for
+the voltage drop on the motor drives to result in a reversal of the supply
+voltage behavior. The voltage drop can at most drop the voltage to zero,
+beyond which our model does not claim to have any validity anyway.
+
+Assuming $\phi > 0$, we obtain the following solution
+
+\begin{equation*}
+\phi = \frac{V_o}{V_s - r_d(V_o - V_E)/r_a}
+\end{equation*}
+
+\noindent which shows that $\phi$ has the same sign as $V_o$. Similarly,
+assuming $\phi < 0$ yields
+ 
+\begin{equation*}
+\phi = \frac{V_o}{V_s + r_d(V_o - V_E)/r_a}
+\end{equation*}
+
+\noindent where $\phi$, once again has the same sign as $V_o$. As a
+consequence, the sign of $\phi$ is always the same as the sign of $V_o$. we
+cannow write down a closed form solution for the duty factor solely as a
+function of the desired command voltage. Note that we also need to clip the
+duty factor in the range $[-1, 1]$ to model the impossibility of supplying a
+terminal voltage larger than the effective supply voltage after the drive
+drop.
+
+\begin{eqnarray*}
+\phi_u & = &\left\{\begin{array}{ll}
+V_o / ( V_s - r_d(V_o - V_E)/r_a)
+& \text{\hspace{0.1in}if\hspace{0.1in}}V_o > 0 \\
+V_o / ( V_s + r_d(V_o - V_E)/r_a)
+& \text{\hspace{0.1in}if\hspace{0.1in}}V_o < 0
+\end{array}\right. \\
+\phi & = & \mathrm{max}(\ \mathrm{min}(\ 1, \phi_u\ ), -1\ )
+\end{eqnarray*}
+
+Finally, the command voltage for the APEX drive is computed using the affine
+map determined after the calibration procedure.
+
+\begin{equation*}
+V_c = \frac{\phi}{s_d}  + V_c^0
+\end{equation*}
+
+This model is implemented in the {\tt MMotor::setCommand()} method of the
+Michigan hardware library. Moreover, this compensation can be disabled by
+setting the {\tt drive\_compensation\_enable} symbol to 0.
+\symbolindex{\tt drive\_compensation\_enable}
+\section{SimSect Hardware}
+
+\section{Virtual Hardware}
